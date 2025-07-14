@@ -1,0 +1,1190 @@
+/* Wallpaper Calculator Styles - Auto-sizing Layout with Quote Form */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    line-height: 1.6;
+    min-height: auto; /* Changed from 100vh to auto */
+    /* Font will be set by font-config.js */
+}
+
+.container {
+    max-width: min(95vw, 1800px);
+    margin: 0 auto;
+    padding: 20px;
+    min-height: auto; /* Allow natural height */
+}
+
+.page-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    /* Font will be set by font-config.js */
+}
+
+.page-title p {
+    margin: 0;
+    opacity: 0.7;
+    font-size: 16px;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.measuring-guide {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.measuring-guide details {
+    padding: 0;
+}
+
+.measuring-guide summary {
+    padding: 20px 40px;
+    cursor: pointer;
+    list-style: none;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.measuring-guide summary h3 {
+    margin-bottom: 15px;
+    text-align: left;
+    color: #333;
+    margin: 0;
+    font-weight: 600;
+    /* Font will be set by font-config.js */
+}
+
+.measuring-guide summary:hover {
+    background-color: #f8f9fa;
+}
+
+.measuring-guide summary::-webkit-details-marker {
+    display: none;
+}
+
+.measuring-guide summary::after {
+    content: '+';
+    float: right;
+    font-size: 18px;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.measuring-guide details[open] summary::after {
+    transform: rotate(45deg);
+}
+
+.guide-content {
+    padding: 20px 40px 40px 40px;
+    border-top: 1px solid #e9ecef;
+}
+
+.guide-content p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+    color: #333;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.guide-content p:last-child {
+    margin-bottom: 0;
+    margin-top: 15px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.calculator-section {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+    /* Font will be set by font-config.js */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    /* Font will be set by font-config.js */
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+    background: white;
+    font-size: 16px;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#pattern {
+    padding-top: 10px;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #6c757d;
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-selected {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s ease;
+    font-size: 16px;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.dropdown-selected:hover {
+    border-color: #6c757d;
+}
+
+.dropdown-selected:focus {
+    outline: none;
+    border-color: #6c757d;
+    box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+}
+
+.dropdown-selected.open {
+    border-color: #6c757d;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.selected-text {
+    flex: 1;
+    text-align: left;
+    color: #495057;
+}
+
+.selected-text.placeholder {
+    color: #6c757d;
+}
+
+.dropdown-arrow {
+    color: #6c757d;
+    transition: transform 0.3s ease;
+    font-size: 12px;
+}
+
+.dropdown-selected.open .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #6c757d;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.dropdown-options.open {
+    display: block;
+}
+
+.dropdown-search {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
+
+.dropdown-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    /* Font will be set by font-config.js */
+}
+
+.dropdown-search input:focus {
+    outline: none;
+    border-color: #6c757d;
+    box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.1);
+}
+
+.options-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.dropdown-option:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.dropdown-option.selected {
+    background-color: #e3f2fd;
+}
+
+.dropdown-option.highlighted {
+    background-color: #e9ecef;
+}
+
+.option-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    margin-right: 12px;
+    object-fit: cover;
+    border: 1px solid #e9ecef;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.option-thumbnail.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.option-text {
+    flex: 1;
+    font-size: 15px;
+    color: #333;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.option-sku {
+    color: #6c757d;
+    font-size: 13px;
+    margin-left: 8px;
+    font-weight: 400;
+}
+
+.no-results {
+    padding: 20px 16px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.dimension-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.dimension-input input {
+    flex: 1;
+}
+
+.dimension-input span {
+    font-weight: 600;
+    opacity: 0.7;
+    /* Font will be set by font-config.js */
+}
+
+/* Generate Preview button - center aligned */
+#generatePreviewBtn {
+    width: 100%;
+    margin: 20px auto;
+    display: block;
+}
+.button-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn {
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    /* Font will be set by font-config.js */
+}
+
+.button-container .btn {
+    flex: 1; /* Equal width buttons in container */
+    margin-top: 0;
+    width: auto;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5a6268;
+}
+
+/* Enhanced Button States for Download Progress - Consistent Gray Styling */
+.btn-processing {
+    background: #6c757d !important;
+    color: white !important;
+    animation: pulse-processing 2s infinite;
+}
+
+.btn-processing:hover {
+    background: #5a6268 !important;
+}
+
+.btn-success {
+    background: #6c757d !important;
+    color: white !important;
+    animation: success-flash 0.5s ease-in-out;
+}
+
+.btn-error {
+    background: #6c757d !important;
+    color: white !important;
+    animation: error-shake 0.5s ease-in-out;
+}
+
+/* Button State Animations */
+@keyframes pulse-processing {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+@keyframes success-flash {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Quote Form Styles */
+.quote-form-container {
+    margin-top: 20px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+}
+
+.quote-form-container.show {
+    max-height: 800px; /* Adjust based on content */
+    opacity: 1;
+}
+
+.quote-form {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 0;
+}
+
+.quote-form h3 {
+    margin-bottom: 25px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    /* Font will be set by font-config.js */
+}
+
+.quote-form .form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Left align form content */
+}
+
+.quote-form .form-group:last-of-type {
+    margin-bottom: 25px;
+}
+
+.quote-form .form-group label {
+    text-align: left;
+}
+
+.quote-form .form-group input,
+.quote-form .form-group textarea {
+    text-align: left;
+}
+
+/* Basic checkbox styling */
+.checkbox-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.preview-section {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+    display: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.title-container {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+    display: block;
+    clear: both;
+}
+
+.title-container h2 {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    color: #333;
+    font-weight: 600;
+    /* Font will be set by font-config.js */
+}
+
+.content-container {
+    width: 100%;
+    display: block;
+    clear: both;
+}
+
+.canvas-container {
+    text-align: center;
+    margin: 30px 0;
+    padding: 0;
+    width: 100%;
+    display: block;
+    clear: both;
+    position: relative;
+}
+
+#previewCanvas {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    max-width: 100%;
+    height: auto;
+    cursor: zoom-in;
+    display: block;
+    margin: 0 auto;
+    /* Removed fixed height constraints */
+}
+
+#previewCanvas:hover {
+    border-color: #3498db;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #666;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Modal styles */
+.canvas-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.canvas-modal canvas {
+    cursor: zoom-out;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    margin: auto;
+    display: block;
+}
+
+.preview-info {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.preview-info h3 {
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+    /* Font will be set by font-config.js */
+}
+
+.order-section {
+    margin-bottom: 20px;
+}
+
+.order-line {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    text-align: center;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e9ecef;
+    margin: 15px 0;
+}
+
+.disclaimer {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.disclaimer p {
+    margin: 0;
+    font-style: italic;
+    opacity: 0.8;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.loading-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.error-message {
+    text-align: center;
+    padding: 20px;
+    color: #dc3545;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+/* Download Button Enhanced Styles - Consistent Gray Theme */
+#downloadPdfBtn {
+    background: #6c757d;
+    border-color: #6c757d;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+#downloadPdfBtn:hover:not(:disabled) {
+    background: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+#downloadPdfBtn:disabled {
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Button state specific overrides for download button - All Gray */
+#downloadPdfBtn.btn-processing {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+#downloadPdfBtn.btn-success {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+#downloadPdfBtn.btn-error {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+/* Submit Quote Button Styles - Same as Download PDF */
+#submitQuoteBtn {
+    background: #6c757d;
+    border-color: #6c757d;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0;
+}
+
+#submitQuoteBtn:hover:not(:disabled) {
+    background: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Input validation styles */
+.form-group input.invalid,
+.form-group textarea.invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.form-group input.valid,
+.form-group textarea.valid {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .btn-primary {
+        background: #000;
+        color: #fff;
+        border: 2px solid #fff;
+    }
+    
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+        border: 2px solid #000;
+    }
+    
+    .dropdown-selected {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .btn,
+    .measuring-guide summary,
+    .form-group select,
+    .form-group input,
+    .form-group textarea,
+    .dropdown-selected,
+    .dropdown-arrow,
+    .quote-form-container {
+        transition: none;
+    }
+    
+    .btn-processing,
+    .btn-success,
+    .btn-error {
+        animation: none;
+    }
+    
+    .option-thumbnail.loading {
+        animation: none;
+        background: #f0f0f0;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        max-width: 95vw;
+    }
+
+    .calculator-section,
+    .preview-section {
+        padding: 25px;
+    }
+
+    .canvas-container {
+        margin: 20px 0;
+        padding: 0 10px;
+    }
+
+    #previewCanvas {
+        max-width: calc(100vw - 50px);
+        width: 100%;
+        height: auto;
+    }
+
+    .dimension-input {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    /* Mobile button container - stack vertically */
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button-container .btn {
+        width: 100%;
+        margin-top: 0;
+    }
+
+    /* Mobile-specific button adjustments */
+    #downloadPdfBtn,
+    #submitQuoteBtn {
+        font-size: 14px;
+        padding: 12px 24px;
+    }
+    
+    /* Mobile dropdown adjustments */
+    .dropdown-options {
+        max-height: 300px;
+    }
+    
+    .options-list {
+        max-height: 220px;
+    }
+    
+    .dropdown-option {
+        padding: 10px 12px;
+    }
+    
+    .option-thumbnail {
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+    }
+    
+    .option-text {
+        font-size: 14px;
+    }
+    
+    .option-sku {
+        font-size: 12px;
+    }
+
+    /* Mobile quote form adjustments */
+    .quote-form {
+        padding: 20px;
+    }
+
+    .quote-form-container.show {
+        max-height: 1000px; /* More space needed on mobile */
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: min(90vw, 2000px);
+    }
+}
+
+/* Auto-sizing optimizations */
+html, body {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.container {
+    padding-bottom: 40px; /* Add bottom padding for spacing */
+}
+
+/* Ensure preview section expands naturally */
+.preview-section {
+    min-height: auto;
+    height: auto;
+}
+
+.canvas-container {
+    min-height: auto;
+    height: auto;
+}
+
+/* Custom dropdown z-index and positioning fixes */
+.custom-dropdown {
+    z-index: 100;
+}
+
+.dropdown-options {
+    z-index: 1001;
+}
+
+/* Ensure dropdown doesn't get cut off at bottom of container */
+.form-group:last-child .dropdown-options {
+    position: fixed;
+    max-height: 300px;
+}
+
+/* Scrollbar styling for dropdown */
+.options-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.options-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.options-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.options-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Enhanced Quote Form Styles - NEW ADDITIONS */
+
+/* Form Error Message Styles */
+.form-error-message {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    color: #721c24;
+    margin-bottom: 20px;
+    padding: 15px;
+    font-weight: 400;
+    /* Font will be set by font-config.js */
+}
+
+.form-error-message p {
+    margin: 0;
+    font-style: italic;
+    font-weight: 500;
+    color: #721c24 !important;
+    /* Font will be set by font-config.js */
+}
+
+.form-error-message em {
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* Enhanced Submit Button States - Consistent Gray Styling */
+#submitQuoteBtn {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    /* Font will be set by font-config.js */
+}
+
+#submitQuoteBtn:hover:not(:disabled) {
+    background: #5a6268;
+    border-color: #545b62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+#submitQuoteBtn:disabled {
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Processing State */
+#submitQuoteBtn.btn-processing {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+    animation: pulse-processing 2s infinite;
+}
+
+#submitQuoteBtn.btn-processing:hover {
+    background: #6c757d !important;
+    transform: none !important;
+}
+
+/* Success State */
+#submitQuoteBtn.btn-success {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+    animation: success-flash 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+#submitQuoteBtn.btn-success:hover {
+    background: #5a6268 !important;
+    border-color: #545b62 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* Error State */
+#submitQuoteBtn.btn-error {
+    background: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+    animation: error-shake 0.5s ease-in-out;
+}
+
+#submitQuoteBtn.btn-error:hover {
+    background: #5a6268 !important;
+    border-color: #545b62 !important;
+}
+
+/* Enhanced Form Validation Styles */
+.quote-form .form-group input.valid,
+.quote-form .form-group textarea.valid {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.quote-form .form-group input.invalid,
+.quote-form .form-group textarea.invalid {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.quote-form .form-group input.valid:focus,
+.quote-form .form-group textarea.valid:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.quote-form .form-group input.invalid:focus,
+.quote-form .form-group textarea.invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Quote Form Container Enhanced Animation */
+.quote-form-container {
+    margin-top: 20px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+}
+
+.quote-form-container.show {
+    max-height: 1000px; /* Increased to accommodate error messages */
+    opacity: 1;
+}
+
+/* Mobile Responsiveness for Enhanced States */
+@media (max-width: 768px) {
+    .form-error-message {
+        padding: 12px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    
+    #submitQuoteBtn {
+        font-size: 14px;
+        padding: 12px 24px;
+    }
+    
+    .quote-form-container.show {
+        max-height: 1200px; /* More space needed on mobile with errors */
+    }
+}
+
+/* High Contrast Mode Support for Form Errors */
+@media (prefers-contrast: high) {
+    .form-error-message {
+        background: #ffffff;
+        border: 3px solid #dc3545;
+        color: #000000;
+    }
+    
+    .form-error-message p,
+    .form-error-message em {
+        color: #000000 !important;
+    }
+    
+    #submitQuoteBtn.btn-processing,
+    #submitQuoteBtn.btn-success,
+    #submitQuoteBtn.btn-error {
+        border: 3px solid #ffffff;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    #submitQuoteBtn.btn-processing,
+    #submitQuoteBtn.btn-success,
+    #submitQuoteBtn.btn-error {
+        animation: none;
+    }
+    
+    .quote-form-container {
+        transition: none;
+    }
+    
+    #submitQuoteBtn {
+        transition: none;
+    }
+}
+
+/* Focus States for Accessibility */
+.form-error-message:focus {
+    outline: 2px solid #dc3545;
+    outline-offset: 2px;
+}
+
+#submitQuoteBtn:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+}
+
+/* Loading State Improvements */
+#submitQuoteBtn.btn-processing::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
