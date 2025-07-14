@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Calculator - Auto-sizing Embed Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        /* AUTO-SIZING IFRAME - Key Changes */
+        .calculator-embed {
+            position: relative;
+            width: 100%;
+            /* Removed fixed height and padding-bottom */
+            background: #f8f9fa;
+            min-height: 600px; /* Minimum height while loading */
+        }
+        
+        .calculator-embed iframe {
+            width: 100%;
+            border: none;
+            display: block;
+            /* Height will be set by JavaScript */
+        }
+        
+        .info-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .info-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .info-card ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .info-card li {
+            margin-bottom: 8px;
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #333;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 4px;
+            }
+            
+            .header, .info-section {
+                padding: 15px;
+            }
+            
+            .calculator-embed {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Wallpaper Calculator - Auto-sizing</h1>
+            <p>Automatically expands to fit content - no scrolling needed!</p>
+        </div>
+        
+        <div class="calculator-embed">
+            <iframe 
+                id="calculatorFrame"
+                src="./index.html" 
+                title="Wallpaper Calculator"
+                scrolling="no">
+            </iframe>
+        </div>
+        
+        <div class="info-section">
+            <h2>Auto-sizing Iframe Implementation</h2>
+            
+            <div class="highlight">
+                <strong>✨ New Feature:</strong> The calculator now automatically resizes to fit all content vertically. No more scrolling within the iframe!
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🎯 Simple Auto-sizing Embed</h3>
+                    <p><strong>Recommended:</strong> Use ResizeObserver for automatic height adjustment</p>
+                    <div class="code-example">
+&lt;div id="calculator-container"&gt;
+  &lt;iframe 
+    id="calculator-iframe"
+    src="https://yourusername.github.io/calculator-base/" 
+    width="100%" 
+    scrolling="no"
+    frameborder="0"
+    title="Wallpaper Calculator"&gt;
+  &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+// Auto-resize iframe based on content
+const iframe = document.getElementById('calculator-iframe');
+const container = document.getElementById('calculator-container');
+
+// Set initial height
+iframe.style.height = '600px';
+
+// Listen for resize events from the iframe content
+window.addEventListener('message', function(event) {
+  if (event.data.type === 'resize') {
+    iframe.style.height = event.data.height + 'px';
+  }
+});
+
+// Alternative: Use ResizeObserver (modern browsers)
+if (window.ResizeObserver) {
+  const observer = new ResizeObserver(entries =&gt; {
+    try {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const height = iframeDoc.documentElement.scrollHeight;
+      iframe.style.height = Math.max(600, height) + 'px';
+    } catch (e) {
+      // Cross-origin restriction - use postMessage instead
+      console.log('Using fallback height adjustment');
+    }
+  });
+  
+  iframe.onload = () =&gt; {
+    try {
+      observer.observe(iframe.contentDocument.documentElement);
+    } catch (e) {
+      // Fallback for cross-origin
+      iframe.style.height = '800px';
+    }
+  };
+}
+&lt;/script&gt;
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>⚡ Quick & Easy Method</h3>
+                    <p>Simple implementation with fixed reasonable height</p>
+                    <div class="code-example">
+&lt;iframe 
+  src="https://yourusername.github.io/calculator-base/" 
+  width="100%" 
+  height="900px"
+  scrolling="no"
+  frameborder="0"
+  title="Wallpaper Calculator"&gt;
+&lt;/iframe&gt;
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📱 Responsive Auto-sizing</h3>
+                    <p>Adapts to both desktop and mobile screen sizes</p>
+                    <div class="code-example">
+&lt;style&gt;
+.calculator-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.calculator-wrapper iframe {
+  width: 100%;
+  height: 900px; /* Default height */
+  border: none;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .calculator-wrapper iframe {
+    height: 1200px; /* Taller on mobile */
+  }
+}
+&lt;/style&gt;
+
+&lt;div class="calculator-wrapper"&gt;
+  &lt;iframe 
+    src="https://yourusername.github.io/calculator-base/" 
+    scrolling="no"
+    title="Wallpaper Calculator"&gt;
+  &lt;/iframe&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🔧 Advanced with PostMessage</h3>
+                    <p>For cross-origin dynamic resizing (future enhancement)</p>
+                    <div class="code-example">
+&lt;iframe 
+  id="calc-frame"
+  src="https://yourusername.github.io/calculator-base/" 
+  width="100%" 
+  height="600px"
+  scrolling="no"
+  frameborder="0"&gt;
+&lt;/iframe&gt;
+
+&lt;script&gt;
+// Listen for height updates from calculator
+window.addEventListener('message', function(event) {
+  // Verify origin for security
+  if (event.origin !== 'https://yourusername.github.io') return;
+  
+  if (event.data.type === 'calculator-resize') {
+    const iframe = document.getElementById('calc-frame');
+    const newHeight = Math.max(600, event.data.height);
+    iframe.style.height = newHeight + 'px';
+  }
+});
+&lt;/script&gt;
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>✅ What Changed</h3>
+                    <ul>
+                        <li><strong>Removed fixed heights</strong> from CSS containers</li>
+                        <li><strong>Auto-expanding layout</strong> - content determines height</li>
+                        <li><strong>No internal scrolling</strong> - everything visible at once</li>
+                        <li><strong>Mobile-optimized</strong> responsive behavior</li>
+                        <li><strong>Natural page flow</strong> with proper spacing</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📏 Typical Heights</h3>
+                    <ul>
+                        <li><strong>Form only:</strong> ~400px</li>
+                        <li><strong>With preview:</strong> ~800-1000px</li>
+                        <li><strong>Mobile:</strong> ~1000-1300px</li>
+                        <li><strong>Large patterns:</strong> ~1200px+</li>
+                    </ul>
+                    <p><em>Heights vary based on pattern complexity and canvas size</em></p>
+                </div>
+            </div>
+            
+            <h3>🚀 Implementation Steps</h3>
+            <ol>
+                <li><strong>Copy the updated files</strong> to your repository</li>
+                <li><strong>Use the auto-sizing embed code</strong> from the examples above</li>
+                <li><strong>Set a reasonable minimum height</strong> (600-900px) for loading</li>
+                <li><strong>Test on your website</strong> to ensure proper sizing</li>
+                <li><strong>Adjust heights</strong> if needed for your specific layout</li>
+            </ol>
+            
+            <div class="highlight">
+                <strong>💡 Pro Tip:</strong> Start with a fixed height of 900px for most use cases. The calculator will expand naturally to show all content without requiring users to scroll within the iframe.
+            </div>
+            
+            <p>
+                The calculator now automatically adapts its height to show all content. Choose the embedding method that best fits your technical setup!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Demo auto-resizing functionality for this page
+        const iframe = document.getElementById('calculatorFrame');
+        
+        // Set initial height
+        iframe.style.height = '600px';
+        
+        // Simple periodic height adjustment (for demo purposes)
+        function adjustIframeHeight() {
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc) {
+                    const body = iframeDoc.body;
+                    const html = iframeDoc.documentElement;
+                    const height = Math.max(
+                        body.scrollHeight,
+                        body.offsetHeight,
+                        html.clientHeight,
+                        html.scrollHeight,
+                        html.offsetHeight
+                    );
+                    
+                    // Add some padding and set minimum height
+                    const newHeight = Math.max(600, height + 50);
+                    iframe.style.height = newHeight + 'px';
+                }
+            } catch (e) {
+                // Cross-origin restrictions - use fallback
+                console.log('Using fallback height for cross-origin iframe');
+                
+                // Estimate height based on whether preview is likely shown
+                setTimeout(() => {
+                    iframe.style.height = '900px'; // Conservative estimate
+                }, 2000);
+            }
+        }
+        
+        // Adjust height when iframe loads
+        iframe.onload = function() {
+            adjustIframeHeight();
+            
+            // Check periodically for content changes (preview generation)
+            setInterval(adjustIframeHeight, 2000);
+        };
+        
+        // Listen for potential resize messages (future enhancement)
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'calculator-resize') {
+                iframe.style.height = Math.max(600, event.data.height) + 'px';
+            }
+        });
+    </script>
+</body>
+</html>

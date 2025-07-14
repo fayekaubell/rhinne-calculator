@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpaper Calculator</title>
+    <meta name="description" content="Professional wallpaper calculator with visual preview - calculate panels and yardage needed for your wallpaper project">
+    <meta name="keywords" content="wallpaper calculator, wallpaper estimator, pattern preview, interior design">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" as="script">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" as="script">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- IMPORTANT: Load CSS Variables font configuration first -->
+    <script src="js/css-variables-font-config.js"></script>
+    <script src="config.js"></script>
+    
+    <!-- NEW: Load logging module after config -->
+    <script src="js/logging.js"></script>
+    
+    <!-- AUTO-RESIZE SYSTEM -->
+    <script src="js/auto-resize.js"></script>
+    
+    <!-- Performance and SEO optimizations -->
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <meta name="theme-color" content="#3498db">
+    
+    <!-- Open Graph meta tags for better sharing -->
+    <meta property="og:title" content="Wallpaper Calculator">
+    <meta property="og:description" content="Professional wallpaper calculator with visual preview">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <div class="container">
+        <div class="page-title">
+            <h1 id="pageTitle" style="display: none;">Wallpaper Preview Calculator</h1>
+            <p id="pageSubtitle">Enter wall dimensions to estimate how much you'll need to purchase.<br>Submit results if you'd like to receive a quote.<br>We'll be in touch within one business day. (probably sooner)</p>
+        </div>
+
+        <div class="measuring-guide">
+            <details>
+                <summary>
+                    <h3>Measuring Guide</h3>
+                </summary>
+                <div class="guide-content">
+                    <p><strong>Standard Walls & Connected Walls:</strong> <span id="standardWallsGuide">Measure total width across all walls and height at the tallest point. Include doors, windows, and other obstacles in your measurements.</span></p>
+                    <p><strong>Stairway Walls:</strong> <span id="stairwayWallsGuide">Measure width at the broadest section and height from the first floor to the maximum height.</span></p>
+                    <p><strong>Ceilings:</strong> <span id="ceilingsGuide">Measure the shorter dimension for width and longer dimension for height.</span></p>
+                    <p><strong>Sloped Ceiling Walls:</strong> <span id="slopedCeilingsGuide">Measure full width and maximum height.</span></p>
+                    <p><em id="measuringNote">Note: Wallpaper projects can be tricky and we love to help. Please don't hesitate to contact us for help with understanding measurements.</em></p>
+                </div>
+            </details>
+        </div>
+
+        <div class="calculator-section">
+            <div id="loadingMessage" class="loading-message loading-pulse">
+                Loading wallpaper patterns...
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;" role="alert">
+                Error loading patterns. Please refresh the page to try again.
+            </div>
+
+            <div id="calculatorForm" style="display: none;">
+                <div class="form-group">
+                    <h3>Select Wallpaper Pattern</h3>
+                    <div class="pattern-input">
+                        <!-- Custom Searchable Dropdown -->
+                        <div class="custom-dropdown" id="patternDropdown">
+                            <div class="dropdown-selected" id="dropdownSelected" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox">
+                                <span class="selected-text">Choose a pattern...</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options" id="dropdownOptions" role="listbox">
+                                <div class="dropdown-search">
+                                    <input type="text" id="patternSearch" placeholder="Search patterns..." autocomplete="off" aria-label="Search wallpaper patterns">
+                                </div>
+                                <div class="options-list" id="optionsList">
+                                    <!-- Options will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden input to maintain form compatibility -->
+                        <input type="hidden" id="pattern" name="pattern" required>
+                        
+                        <div id="pattern-help" class="sr-only">Select a wallpaper pattern from the dropdown to begin calculations</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Wall Width</h3>
+                    <div class="dimension-input">
+                        <input type="number" 
+                               id="widthFeet" 
+                               placeholder="Feet" 
+                               min="0" 
+                               max="50" 
+                               aria-label="Wall width in feet"
+                               autocomplete="off">
+                        <span>ft</span>
+                        <input type="number" 
+                               id="widthInches" 
+                               placeholder="Inches" 
+                               min="0" 
+                               max="11" 
+                               step="0.25" 
+                               value="0"
+                               aria-label="Wall width in inches"
+                               autocomplete="off">
+                        <span>in</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Wall Height</h3>
+                    <div class="dimension-input">
+                        <input type="number" 
+                               id="heightFeet" 
+                               placeholder="Feet" 
+                               min="0" 
+                               max="40"
+                               aria-label="Wall height in feet"
+                               autocomplete="off">
+                        <span>ft</span>
+                        <input type="number" 
+                               id="heightInches" 
+                               placeholder="Inches" 
+                               min="0" 
+                               max="11" 
+                               step="0.25" 
+                               value="0"
+                               aria-label="Wall height in inches"
+                               autocomplete="off">
+                        <span>in</span>
+                    </div>
+                </div>
+
+                <button type="button" 
+                        class="btn btn-primary" 
+                        id="generatePreviewBtn"
+                        aria-describedby="generate-help">
+                    Generate Preview
+                </button>
+                <div id="generate-help" class="sr-only">Click to generate a visual preview of your wallpaper layout</div>
+            </div>
+        </div>
+
+        <div class="preview-section" id="previewSection" role="region" aria-label="Wallpaper preview results">
+            <div class="title-container">
+                <h2 id="previewTitle">Pattern Preview</h2>
+                <div id="panelLimitWarning" class="disclaimer" style="display: none; margin-top: 15px; color: #dc3545;" role="alert">
+                    <p><em>Our panels typically do not print longer than 27'. However, problem solving is our specialty so feel free to contact us directly to see if we can come up with a solution.</em></p>
+                </div>
+            </div>
+
+            <div class="content-container">
+                <div class="canvas-container">
+                    <canvas id="previewCanvas" 
+                            width="1400" 
+                            height="1200" 
+                            aria-label="Visual preview of wallpaper pattern layout">
+                    </canvas>
+                    <div class="loading-overlay" id="loadingOverlay" style="display: none;" aria-hidden="true">
+                        Loading pattern preview...
+                    </div>
+                </div>
+
+                <div class="preview-info" role="complementary" aria-label="Order quantity information">
+                    <div class="order-section">
+                        <h3>Order quantity as shown:</h3>
+                        <div class="order-line" id="orderQuantity" aria-live="polite">
+                            [x0] 0' Panels
+                        </div>
+                        <div class="order-line">
+                            <strong>Yardage per panel:</strong> <span id="yardagePerPanel">0 yds</span>
+                        </div>
+                        <div class="order-line">
+                            <strong>Total yardage:</strong> <span id="totalYardage">0 yds</span>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="order-section">
+                        <h3>Order quantity with 20% overage added:</h3>
+                        <div class="order-line" id="orderQuantityWithOverage" aria-live="polite">
+                            [x0] 0' Panels
+                        </div>
+                        <div class="order-line">
+                            <strong>Yardage per panel:</strong> <span id="yardagePerPanelOverage">0 yds</span>
+                        </div>
+                        <div class="order-line">
+                            <strong>Total yardage:</strong> <span id="totalYardageOverage">0 yds</span>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="disclaimer">
+                        <p><em id="resultsDisclaimer">Results take into consideration order minimums and at least 4" overage. We recommend adding 10-30% overage to prevent installation snafus.</em></p>
+                    </div>
+
+                    <!-- Button Container for Download PDF and Submit Quote buttons -->
+                    <div class="button-container" id="buttonContainer" style="display: none;">
+                        <!-- Buttons will be added here by JavaScript -->
+                    </div>
+
+                    <!-- Quote Form (initially hidden) -->
+                    <div class="quote-form-container" id="quoteFormContainer" style="display: none;">
+                        <div class="quote-form">
+                            <h3>Request a Quote</h3>
+                            
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emailAddress">Email Address *</label>
+                                <input type="email" id="emailAddress" name="emailAddress" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="businessName">Business Name</label>
+                                <input type="text" id="businessName" name="businessName">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="additionalNotes">Additional Notes</label>
+                                <textarea id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any specific requirements, timeline, or questions..."></textarea>
+                            </div>
+
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="newsletterSignup" name="newsletterSignup">
+                                    Check this box to sign up for our monthly newsletter.
+                                </label>
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="submitQuoteBtn">
+                                Submit Quote Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen reader only helper text -->
+    <div class="sr-only" aria-live="polite" id="announcements"></div>
+
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+<!-- JavaScript modules in correct order -->
+<script src="js/pattern-data.js"></script>
+<script src="js/calculator.js"></script>
+<!-- Canvas drawing modules -->
+<script src="js/canvas-drawing-core.js"></script>
+<script src="js/canvas-drawing-patterns.js"></script>
+<script src="js/canvas-drawing-sections.js"></script>
+<script src="js/canvas-drawing.js"></script>
+<!-- End canvas drawing modules -->
+<script src="js/preview.js"></script>
+<script src="js/pdf-generation.js"></script>
+<script src="js/quote-form.js"></script>
+    
+    <script>
+        // Enhanced initialization with auto-resize integration
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Enhanced Wallpaper Calculator with auto-resize and logging initializing...');
+            
+            // Performance monitoring
+            const startTime = performance.now();
+            
+            try {
+                // Initialize calculator
+                initializeCalculator();
+                
+                // Initialize PDF generation
+                initializePDFGeneration();
+                
+                // Initialize quote form
+                initializeQuoteForm();
+                
+                // Enhanced event listeners with auto-resize triggers
+                const generateBtn = document.getElementById('generatePreviewBtn');
+                if (generateBtn) {
+                    generateBtn.addEventListener('click', function() {
+                        // Add loading state
+                        generateBtn.disabled = true;
+                        generateBtn.textContent = 'Generating...';
+                        
+                        // Announce to screen readers
+                        announceToScreenReader('Generating wallpaper preview...');
+                        
+                        // Trigger resize after state change
+                        setTimeout(() => {
+                            if (window.autoResize) window.autoResize.updateHeight();
+                        }, 100);
+                        
+                        setTimeout(() => {
+                            generatePreview().finally(() => {
+                                generateBtn.disabled = false;
+                                generateBtn.textContent = 'Generate Preview';
+                                
+                                // Trigger resize after preview generation
+                                setTimeout(() => {
+                                    if (window.autoResize) window.autoResize.updateHeight();
+                                    
+                                    // Dispatch custom event for auto-resize system
+                                    window.dispatchEvent(new CustomEvent('previewComplete'));
+                                }, 200);
+                                
+                                // Add download and quote buttons after preview is generated
+                                setTimeout(() => {
+                                    addDownloadAndQuoteButtons();
+                                    
+                                    // Final resize after buttons added
+                                    setTimeout(() => {
+                                        if (window.autoResize) window.autoResize.updateHeight();
+                                    }, 100);
+                                }, 500);
+                            });
+                        }, 100);
+                    });
+                }
+                
+                // Add enhanced input validation and formatting
+                addInputEnhancements();
+                
+                // Add keyboard shortcuts
+                addKeyboardShortcuts();
+                
+                // Trigger initial resize after everything loads
+                setTimeout(() => {
+                    if (window.autoResize) window.autoResize.updateHeight();
+                }, 1000);
+                
+                const endTime = performance.now();
+                console.log(`✅ Calculator with auto-resize and logging initialized in ${Math.round(endTime - startTime)}ms`);
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize calculator:', error);
+                showErrorMessage('Failed to initialize calculator. Please refresh the page.');
+            }
+        });
+        
+        // Enhanced input validation and formatting
+        function addInputEnhancements() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            
+            inputs.forEach(input => {
+                // Add real-time validation
+                input.addEventListener('input', function() {
+                    const value = parseFloat(this.value);
+                    const min = parseFloat(this.min);
+                    const max = parseFloat(this.max);
+                    
+                    if (value < min) {
+                        this.value = min;
+                    } else if (value > max) {
+                        this.value = max;
+                    }
+                    
+                    // Remove invalid class if value is now valid
+                    this.classList.remove('invalid');
+                });
+                
+                // Add blur formatting
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.value = parseFloat(this.value).toString();
+                    }
+                });
+                
+                // Prevent invalid characters
+                input.addEventListener('keypress', function(e) {
+                    const char = String.fromCharCode(e.which);
+                    if (!/[0-9.]/.test(char) && e.which !== 8 && e.which !== 0) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        }
+        
+        // Keyboard shortcuts
+        function addKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + Enter to generate preview
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    const generateBtn = document.getElementById('generatePreviewBtn');
+                    if (generateBtn && !generateBtn.disabled) {
+                        generateBtn.click();
+                    }
+                }
+                
+                // Escape to close modal
+                if (e.key === 'Escape') {
+                    const modal = document.querySelector('.canvas-modal-enhanced');
+                    if (modal) {
+                        modal.remove();
+                    }
+                }
+            });
+        }
+        
+        // Screen reader announcements
+        function announceToScreenReader(message) {
+            const announcements = document.getElementById('announcements');
+            if (announcements) {
+                announcements.textContent = message;
+                setTimeout(() => {
+                    announcements.textContent = '';
+                }, 1000);
+            }
+        }
+        
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e);
+            showErrorMessage('An unexpected error occurred. Please refresh the page.');
+        });
+        
+        // Auto-resize integration for form changes
+        document.addEventListener('change', function(e) {
+            if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') {
+                // Small delay to allow for any layout changes
+                setTimeout(() => {
+                    if (window.autoResize) window.autoResize.updateHeight();
+                }, 100);
+            }
+        });
+    </script>
+    
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Wallpaper Calculator",
+        "description": "Professional wallpaper calculator with visual preview",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+</body>
+</html>
