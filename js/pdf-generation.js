@@ -2,7 +2,7 @@
 // Requires jsPDF library to be loaded
 // UPDATED: Improved text formatting with centered alignment and consistent sizing
 // UPDATED: Added product links functionality
-// UPDATED: Removed 20% overage section and disclaimer
+// UPDATED: Changed titles, kept overage section, removed disclaimer
 
 // PDF generation function with sequential preview numbers
 async function generatePDF() {
@@ -280,7 +280,7 @@ async function loadLogoForPDF() {
     });
 }
 
-// UPDATED: Calculate total content height for vertical centering - REMOVED overage calculations
+// UPDATED: Calculate total content height for vertical centering - includes overage but removes disclaimer
 function calculateTotalContentHeight(pdf, maxWidth) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -305,17 +305,16 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     totalHeight += lineHeight * patternDetailsLines;
     totalHeight += sectionSpacing;
     
-    // UPDATED: Order quantity section - REMOVED overage calculations, simplified
+    // Order quantity section - count lines based on pattern type (with overage)
     if (calculations.saleType === 'yard') {
-        totalHeight += lineHeight * 3; // Only basic order lines for yard patterns
+        totalHeight += lineHeight * 6; // Basic + overage lines for yard patterns
     } else {
-        totalHeight += lineHeight * 5; // Only basic order lines for panel patterns
+        totalHeight += lineHeight * 10; // Basic + overage lines for panel patterns
     }
     totalHeight += sectionSpacing;
     
-    // REMOVED: Disclaimer section - not calculating height for it anymore
-    // Contact info only
-    totalHeight += lineHeight * 2; // Contact info only
+    // Contact information only (removed disclaimer)
+    totalHeight += lineHeight * 2; // Contact info lines
     
     return totalHeight;
 }
@@ -410,7 +409,7 @@ function addProductLinksToPDF(pdf, centerX, currentY, lineHeight) {
     return linkY;
 }
 
-// UPDATED: Add enhanced text content to PDF - REMOVED overage section and disclaimer
+// UPDATED: Add enhanced text content to PDF with new titles, kept overage, removed disclaimer
 async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -504,15 +503,16 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     pdf.text(`Date: ${currentDate}`, centerX, currentY, { align: 'center' });
     currentY += sectionSpacing;
     
-    // UPDATED: Order Quantity Section - REMOVED overage section completely
+    // UPDATED: Order Quantity Section with new titles and kept overage
     if (calculations.saleType === 'yard') {
-        // Yard-based calculations - only basic order info
+        // Yard-based calculations
         const totalYardage = calculations.totalYardage;
+        const overageYardage = Math.ceil(totalYardage * 1.2);
         
-        // Header font for section title
+        // Header font for section title - NEW TITLE
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity:', centerX, currentY, { align: 'center' });
+        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
@@ -521,16 +521,35 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
+        // Add extra line of spacing before overage section
+        currentY += lineHeight;
+        
+        // Header font for overage section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for overage content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
     } else {
-        // Panel-based calculations - only basic order info
+        // Panel-based calculations
         const panelLength = calculations.panelLength;
         const yardagePerPanel = Math.round(panelLength / 3);
         const totalYardage = calculations.panelsNeeded * yardagePerPanel;
+        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
+        const overageYardage = overagePanels * yardagePerPanel;
         
-        // Header font for section title
+        // Header font for section title - NEW TITLE
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity:', centerX, currentY, { align: 'center' });
+        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
@@ -541,6 +560,27 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Add extra line of spacing before overage section
+        currentY += lineHeight;
+        
+        // Header font for overage section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for overage content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`[x${overagePanels}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
     }
     
