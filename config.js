@@ -24,8 +24,8 @@ const CONFIG = {
     // Enable/disable logging system
     enabled: true,
     
-    // UPDATED: New Google Apps Script webhook URL - CORRECTED WITH ACTUAL DEPLOYMENT URL
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz0inXDODu8dUY-FfuTk9OIeucsL8V-zFifhbRkMqYyshqZ7CotisucF_KpRIGidlWT/exec",
+    // UPDATED: Final Google Apps Script webhook URL - wallpaper.calculator.rhinne@gmail.com account
+    webhookUrl: "https://script.google.com/macros/s/AKfycbyIhqo6-e61Ic8pq2k5P45tBZZZrL1ivtb7B1EWvAAENt5JL_fwMUExpAlcIgn49GxR/exec",
     
     // Retry settings for webhook requests
     retryAttempts: 3,
