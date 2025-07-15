@@ -2,6 +2,7 @@
 // Requires jsPDF library to be loaded
 // UPDATED: Improved text formatting with centered alignment and consistent sizing
 // UPDATED: Added product links functionality
+// UPDATED: Removed 20% overage section and disclaimer
 
 // PDF generation function with sequential preview numbers
 async function generatePDF() {
@@ -279,7 +280,7 @@ async function loadLogoForPDF() {
     });
 }
 
-// UPDATED: Calculate total content height for vertical centering - includes product links
+// UPDATED: Calculate total content height for vertical centering - REMOVED overage calculations
 function calculateTotalContentHeight(pdf, maxWidth) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -304,19 +305,17 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     totalHeight += lineHeight * patternDetailsLines;
     totalHeight += sectionSpacing;
     
-    // Order quantity section - count lines based on pattern type (with extra spacing)
-    // Add one extra line for each pattern type due to the split overage header
+    // UPDATED: Order quantity section - REMOVED overage calculations, simplified
     if (calculations.saleType === 'yard') {
-        totalHeight += lineHeight * 6; // Order lines for yard patterns + extra spacing + split header
+        totalHeight += lineHeight * 3; // Only basic order lines for yard patterns
     } else {
-        totalHeight += lineHeight * 10; // Order lines for panel patterns + extra spacing + split header
+        totalHeight += lineHeight * 5; // Only basic order lines for panel patterns
     }
     totalHeight += sectionSpacing;
     
-    // Contact and disclaimer section - calculate actual wrapped text height
-    const disclaimerText = CONFIG.ui.text.disclaimers.results;
-    const disclaimerLines = Math.ceil(disclaimerText.length / 80); // Rough estimate of wrapped lines
-    totalHeight += lineHeight * (disclaimerLines + 3); // Disclaimer + contact info + spacing
+    // REMOVED: Disclaimer section - not calculating height for it anymore
+    // Contact info only
+    totalHeight += lineHeight * 2; // Contact info only
     
     return totalHeight;
 }
@@ -411,7 +410,7 @@ function addProductLinksToPDF(pdf, centerX, currentY, lineHeight) {
     return linkY;
 }
 
-// UPDATED: Add enhanced text content to PDF with centered alignment, consistent sizing, and product links
+// UPDATED: Add enhanced text content to PDF - REMOVED overage section and disclaimer
 async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -505,16 +504,15 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     pdf.text(`Date: ${currentDate}`, centerX, currentY, { align: 'center' });
     currentY += sectionSpacing;
     
-    // Order Quantity Section - Headers in header font, content in body font
+    // UPDATED: Order Quantity Section - REMOVED overage section completely
     if (calculations.saleType === 'yard') {
-        // Yard-based calculations
+        // Yard-based calculations - only basic order info
         const totalYardage = calculations.totalYardage;
-        const overageYardage = Math.ceil(totalYardage * 1.2);
         
         // Header font for section title
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity as shown:', centerX, currentY, { align: 'center' });
+        pdf.text('Order quantity:', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
@@ -523,35 +521,16 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
-        // Add extra line of spacing before overage section
-        currentY += lineHeight;
-        
-        // Header font for overage section title
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity with 20%', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text('overage added:', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for overage content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
     } else {
-        // Panel-based calculations - matching the screenshot format
+        // Panel-based calculations - only basic order info
         const panelLength = calculations.panelLength;
         const yardagePerPanel = Math.round(panelLength / 3);
         const totalYardage = calculations.panelsNeeded * yardagePerPanel;
-        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
-        const overageYardage = overagePanels * yardagePerPanel;
         
         // Header font for section title
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity as shown:', centerX, currentY, { align: 'center' });
+        pdf.text('Order quantity:', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
@@ -559,54 +538,18 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         pdf.setFont(undefined, 'normal');
         pdf.text(`[x${calculations.panelsNeeded}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
-        pdf.text(`Yardage per a panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
+        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Add extra line of spacing before overage section
-        currentY += lineHeight;
-        
-        // Header font for overage section title
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Order quantity with 20%', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text('overage added:', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for overage content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`[x${overagePanels}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text(`Yardage per a panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
     }
     
     currentY += sectionSpacing;
     
-    // Footer/Contact/Disclaimer - All centered and same font size with proper spacing
-    pdf.setFontSize(bodyFontSize); // Same size as body text
-    pdf.setFont(undefined, 'italic'); // Italic for disclaimer to match original
-    
-    // Disclaimer - use splitTextToSize to handle wrapping properly
-    const disclaimerText = CONFIG.ui.text.disclaimers.results;
-    const disclaimerLines = pdf.splitTextToSize(disclaimerText, maxWidth - 0.3);
-    
-    // Add each line of disclaimer text with proper spacing
-    for (let i = 0; i < disclaimerLines.length; i++) {
-        pdf.text(disclaimerLines[i], centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-    }
-    
-    // Add extra spacing after disclaimer
-    currentY += 0.1;
-    
-    // Contact information - back to normal font
+    // UPDATED: Contact information only (removed disclaimer)
+    pdf.setFontSize(bodyFontSize);
     pdf.setFont(undefined, 'normal');
+    
     pdf.text(`${CONFIG.business.email} • ${CONFIG.business.website}`, centerX, currentY, { align: 'center' });
     currentY += lineHeight;
     pdf.text(`${CONFIG.business.location}`, centerX, currentY, { align: 'center' });
