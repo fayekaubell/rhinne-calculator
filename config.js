@@ -6,17 +6,17 @@ const CONFIG = {
   // Business Information
   business: {
     name: "Rhinne",
-    website: "www.fayebell.com",
-    email: "info@fayebell.com",
+    website: "rhinne.us",
+    email: "hannah@rhinne.us",
     location: "Brooklyn, NY",
-    logoUrl: "https://cdn.shopify.com/s/files/1/0571/8700/8610/files/Logo_Final2_Black_826e9cd0-43d1-4791-b5ca-72895a34d743.png?v=1724601480"
+    logoUrl: "https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/refs/heads/main/data/Rhinne-logo.jpg"
   },
 
   // Data Sources
   data: {
     patternsCSV: "./data/patterns.csv",
     // Set to relative path if hosting images locally, or full URL if using external CDN
-    imageBaseUrl: "https://fayekaubell.github.io/calculator-base/data/patterns/"
+    imageBaseUrl: "https://fayekaubell.github.io/rhinne-calculator/data/patterns/"
   },
 
   // Google Sheets Logging Configuration - UPDATED WITH NEW WEBHOOK URL
