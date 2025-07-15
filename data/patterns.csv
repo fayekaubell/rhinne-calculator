@@ -1,5 +1,5 @@
 pattern_name,sale_type,repeat_width_inches,repeat_height_inches,material_width_inches,panel_sequence,available_lengths_feet,pattern_match,min_yard_order,repeat_url,sku,product_tearsheet_url,product_page_url,360_view_url,description
-Megaflora: Dusk,yard,27,33.5,27,,,half drop,5,https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/main/data/patterns/W-MEG-DUS-2.jpg,W-MEG-DUS-2,,,,
+Megaflora: Dusk,yard,27,33.5,27,,,half drop,5,https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/main/data/patterns/W-MEG-DUS-2.jpg,W-MEG-DUS-2,https://fayebell.com/,https://fayebell.com/,https://fayebell.com/,https://fayebell.com/
 Megaflora: Tomato,yard,27,33.5,27,,,half drop,5,https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/main/data/patterns/W-MEG-DUS.jpg,W-MEG-DUS,,,,
 Megaflora: Blue,yard,27,33.5,27,,,half drop,5,https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/main/data/patterns/W-MEG-BLU.jpg,W-MEG-BLU,,,,
 Megaflora: Butterscotch,yard,27,33.5,27,,,half drop,5,https://raw.githubusercontent.com/fayekaubell/rhinne-calculator/main/data/patterns/W-MEG-DUS-1.jpg,W-MEG-DUS-1,,,,
