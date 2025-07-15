@@ -1188,21 +1188,3 @@ html, body {
     0% { transform: translateY(-50%) rotate(0deg); }
     100% { transform: translateY(-50%) rotate(360deg); }
 }
-
-/* Additional CSS to hide overage-related elements */
-/* Add this to the end of your css/styles.css file */
-
-/* Hide overage-related elements */
-#orderQuantityWithOverage,
-#yardagePerPanelOverage, 
-#totalYardageOverage,
-.order-section:nth-of-type(2),
-.divider,
-.disclaimer {
-    display: none !important;
-}
-
-/* Ensure the main order section is properly spaced without the divider */
-.order-section:first-of-type {
-    margin-bottom: 30px;
-}
