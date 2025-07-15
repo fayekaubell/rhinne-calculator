@@ -1,6 +1,7 @@
 // Enhanced PDF Generation Module - Uses sequential preview numbers from Google Sheets
 // Requires jsPDF library to be loaded
 // UPDATED: Improved text formatting with centered alignment and consistent sizing
+// UPDATED: Added product links functionality
 
 // PDF generation function with sequential preview numbers
 async function generatePDF() {
@@ -278,7 +279,7 @@ async function loadLogoForPDF() {
     });
 }
 
-// Calculate total content height for vertical centering
+// UPDATED: Calculate total content height for vertical centering - includes product links
 function calculateTotalContentHeight(pdf, maxWidth) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -293,6 +294,13 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     if (pattern.sku) {
         patternDetailsLines += 1; // Add line for SKU if it exists
     }
+    
+    // NEW: Add lines for product links
+    const productLinksCount = getProductLinksCount(pattern);
+    if (productLinksCount > 0) {
+        patternDetailsLines += productLinksCount + 1; // Links + half-line spacing above and below
+    }
+    
     totalHeight += lineHeight * patternDetailsLines;
     totalHeight += sectionSpacing;
     
@@ -313,7 +321,97 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     return totalHeight;
 }
 
-// UPDATED: Add enhanced text content to PDF with centered alignment and consistent sizing
+// NEW: Count how many product links are available
+function getProductLinksCount(pattern) {
+    let count = 0;
+    
+    if (pattern.product_tearsheet_url && pattern.product_tearsheet_url.trim()) {
+        count++;
+    }
+    
+    if (pattern.product_page_url && pattern.product_page_url.trim()) {
+        count++;
+    }
+    
+    if (pattern.product_360_url && pattern.product_360_url.trim()) {
+        count++;
+    }
+    
+    return count;
+}
+
+// NEW: Add product links to PDF
+function addProductLinksToPDF(pdf, centerX, currentY, lineHeight) {
+    const { pattern } = currentPreview;
+    let linkY = currentY;
+    let linksAdded = 0;
+    
+    // Set font for links - 12pt, bold, black
+    pdf.setFontSize(12);
+    pdf.setFont(undefined, 'bold');
+    pdf.setTextColor(0, 0, 0); // Black color
+    
+    // Add half-line spacing above links if any exist
+    const productLinksCount = getProductLinksCount(pattern);
+    if (productLinksCount > 0) {
+        linkY += lineHeight * 0.5;
+    }
+    
+    // Check and add product tearsheet link
+    if (pattern.product_tearsheet_url && pattern.product_tearsheet_url.trim()) {
+        const linkText = 'Product Tearsheet >';
+        const linkUrl = pattern.product_tearsheet_url.trim();
+        
+        pdf.textWithLink(linkText, centerX, linkY, { 
+            url: linkUrl,
+            align: 'center'
+        });
+        
+        linkY += lineHeight;
+        linksAdded++;
+        console.log('✅ Added product tearsheet link to PDF');
+    }
+    
+    // Check and add product page link
+    if (pattern.product_page_url && pattern.product_page_url.trim()) {
+        const linkText = 'Product Page >';
+        const linkUrl = pattern.product_page_url.trim();
+        
+        pdf.textWithLink(linkText, centerX, linkY, { 
+            url: linkUrl,
+            align: 'center'
+        });
+        
+        linkY += lineHeight;
+        linksAdded++;
+        console.log('✅ Added product page link to PDF');
+    }
+    
+    // Check and add 360 view link
+    if (pattern.product_360_url && pattern.product_360_url.trim()) {
+        const linkText = '360 View >';
+        const linkUrl = pattern.product_360_url.trim();
+        
+        pdf.textWithLink(linkText, centerX, linkY, { 
+            url: linkUrl,
+            align: 'center'
+        });
+        
+        linkY += lineHeight;
+        linksAdded++;
+        console.log('✅ Added 360 view link to PDF');
+    }
+    
+    // Add half-line spacing below links if any were added
+    if (linksAdded > 0) {
+        linkY += lineHeight * 0.5;
+        console.log(`✅ Added ${linksAdded} product links to PDF`);
+    }
+    
+    return linkY;
+}
+
+// UPDATED: Add enhanced text content to PDF with centered alignment, consistent sizing, and product links
 async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -358,6 +456,9 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         pdf.text(pattern.sku, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
     }
+    
+    // NEW: Add product links after pattern name/SKU
+    currentY = addProductLinksToPDF(pdf, centerX, currentY, lineHeight);
     
     // Wall dimensions - back to body font with label
     pdf.setFontSize(bodyFontSize);
@@ -567,7 +668,7 @@ function resetCalculator() {
 
 // Initialize PDF generation functionality
 function initializePDFGeneration() {
-    console.log('📄 PDF generation module initialized with sequential numbering');
+    console.log('📄 PDF generation module initialized with sequential numbering and product links');
     
     // Check if jsPDF is available
     if (typeof window.jspdf === 'undefined') {
@@ -584,5 +685,7 @@ window.pdfGenerationAPI = {
     generateHighResCanvas,
     resetCalculator,
     initializePDFGeneration,
-    getSequentialPreviewNumber
+    getSequentialPreviewNumber,
+    addProductLinksToPDF,
+    getProductLinksCount
 };
