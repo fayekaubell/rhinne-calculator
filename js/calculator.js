@@ -64,8 +64,15 @@ function applyConfiguration() {
 // Load patterns and populate dropdown
 async function loadAndPopulatePatterns() {
     try {
+        console.log('🔄 Starting pattern loading process...');
+        
         // Load patterns from CSV (function now in pattern-data.js)
         await loadPatternsFromCSV();
+        
+        console.log('📊 Patterns loaded, checking data:', {
+            totalPatterns: Object.keys(patterns).length,
+            firstPattern: Object.keys(patterns)[0] ? patterns[Object.keys(patterns)[0]] : 'None'
+        });
         
         // Initialize the custom dropdown
         initializeCustomDropdown();
@@ -75,6 +82,10 @@ async function loadAndPopulatePatterns() {
         
     } catch (error) {
         console.error('❌ Failed to load patterns:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack
+        });
         showErrorMessage('Failed to load wallpaper patterns. Please refresh the page to try again.');
     }
 }
@@ -83,11 +94,22 @@ async function loadAndPopulatePatterns() {
 function initializeCustomDropdown() {
     console.log('🔍 Initializing custom searchable dropdown...');
     
+    // Check if patterns is available
+    if (typeof patterns === 'undefined' || !patterns) {
+        console.error('❌ Patterns not available for dropdown initialization');
+        return;
+    }
+    
     // Convert patterns object to array and sort
     allPatterns = Object.keys(patterns).map(patternId => ({
         id: patternId,
         ...patterns[patternId]
     })).sort((a, b) => a.name.localeCompare(b.name));
+    
+    console.log('📋 Patterns converted to array:', {
+        totalPatterns: allPatterns.length,
+        firstPattern: allPatterns[0] ? allPatterns[0].name : 'None'
+    });
     
     filteredPatterns = [...allPatterns];
     
@@ -271,8 +293,9 @@ function handleSearch(e) {
     } else {
         filteredPatterns = allPatterns.filter(pattern => {
             const nameMatch = pattern.name.toLowerCase().includes(searchTerm);
-            // REMOVED: SKU matching since we're not displaying SKUs
-            return nameMatch;
+            // Keep SKU matching for search functionality even though we don't display it
+            const skuMatch = pattern.sku && pattern.sku.toLowerCase().includes(searchTerm);
+            return nameMatch || skuMatch;
         });
     }
     
