@@ -3,6 +3,7 @@
 // UPDATED: Improved text formatting with centered alignment and consistent sizing
 // UPDATED: Added product links functionality
 // UPDATED: Changed titles, kept overage section, removed disclaimer
+// UPDATED: Removed SKU from titles and updated filename format
 
 // PDF generation function with sequential preview numbers
 async function generatePDF() {
@@ -64,10 +65,11 @@ async function generatePDF() {
         // Add enhanced text content to right side with vertical centering
         await addEnhancedTextContentToPDF(pdf, canvasAreaWidth + canvasMargin, canvasMargin, textAreaWidth, canvasAreaHeight);
 
-        // UPDATED: Generate filename with sequential preview number
+        // UPDATED: Generate filename with new format - Rhinne-PatternName-Wallpaper-Preview-PreviewNumber
         const { pattern } = currentPreview;
         const sequentialNumber = getSequentialPreviewNumber();
-        const filename = `Faye-Bell-Wallpaper-Preview-${pattern.sku}-${sequentialNumber}.pdf`;
+        const cleanPatternName = pattern.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        const filename = `Rhinne-${cleanPatternName}-Wallpaper-Preview-${sequentialNumber}.pdf`;
 
         // LOGGING: Dispatch logging event for PDF download
         if (typeof window.dispatchPDFDownloaded === 'function') {
@@ -290,11 +292,8 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     
     let totalHeight = headerHeight; // Title area
     
-    // Pattern details section - account for pattern name + SKU on separate lines
-    let patternDetailsLines = 5; // Base lines (name, wall dimensions, repeat, match, preview number, date)
-    if (pattern.sku) {
-        patternDetailsLines += 1; // Add line for SKU if it exists
-    }
+    // Pattern details section - UPDATED: Removed SKU line
+    let patternDetailsLines = 4; // Base lines (name, wall dimensions, repeat, match, preview number, date) - reduced by 1 for no SKU
     
     // NEW: Add lines for product links
     const productLinksCount = getProductLinksCount(pattern);
@@ -409,7 +408,7 @@ function addProductLinksToPDF(pdf, centerX, currentY, lineHeight) {
     return linkY;
 }
 
-// UPDATED: Add enhanced text content to PDF with new titles, kept overage, removed disclaimer
+// UPDATED: Add enhanced text content to PDF with new titles, kept overage, removed disclaimer, removed SKU
 async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -449,13 +448,9 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     pdf.text(pattern.name, centerX, currentY, { align: 'center' });
     currentY += lineHeight;
     
-    // SKU on separate line in header font (if available)
-    if (pattern.sku) {
-        pdf.text(pattern.sku, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-    }
+    // REMOVED: SKU line completely
     
-    // NEW: Add product links after pattern name/SKU
+    // NEW: Add product links after pattern name
     currentY = addProductLinksToPDF(pdf, centerX, currentY, lineHeight);
     
     // Wall dimensions - back to body font with label
@@ -518,47 +513,6 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         // Body font for content
         pdf.setFontSize(bodyFontSize);
         pdf.setFont(undefined, 'normal');
-        pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Add extra line of spacing before overage section
-        currentY += lineHeight;
-        
-        // Header font for overage section title - NEW TITLE
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for overage content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-    } else {
-        // Panel-based calculations
-        const panelLength = calculations.panelLength;
-        const yardagePerPanel = Math.round(panelLength / 3);
-        const totalYardage = calculations.panelsNeeded * yardagePerPanel;
-        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
-        const overageYardage = overagePanels * yardagePerPanel;
-        
-        // Header font for section title - NEW TITLE
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`[x${calculations.panelsNeeded}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
@@ -671,4 +625,45 @@ window.pdfGenerationAPI = {
     getSequentialPreviewNumber,
     addProductLinksToPDF,
     getProductLinksCount
-};
+};;
+        
+        // Add extra line of spacing before overage section
+        currentY += lineHeight;
+        
+        // Header font for overage section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for overage content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+    } else {
+        // Panel-based calculations
+        const panelLength = calculations.panelLength;
+        const yardagePerPanel = Math.round(panelLength / 3);
+        const totalYardage = calculations.panelsNeeded * yardagePerPanel;
+        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
+        const overageYardage = overagePanels * yardagePerPanel;
+        
+        // Header font for section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`[x${calculations.panelsNeeded}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight
