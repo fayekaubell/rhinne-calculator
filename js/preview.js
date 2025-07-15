@@ -2,6 +2,7 @@
 // UPDATED: Simplified warning logic - removed red overlay complexity
 // UPDATED: Added Google Sheets logging integration
 // UPDATED: Added product links functionality
+// UPDATED: Removed 20% overage section and disclaimer
 
 // Generate preview function - main coordination logic
 async function generatePreview() {
@@ -309,21 +310,51 @@ function addProductLinksToPreview() {
     }
 }
 
-// Update preview info display - handles the order quantities section
+// UPDATED: Update preview info display - REMOVED overage section
 function updatePreviewInfo() {
     const { calculations } = currentPreview;
     
     const orderQuantity = document.getElementById('orderQuantity');
-    const orderQuantityWithOverage = document.getElementById('orderQuantityWithOverage');
     const yardagePerPanel = document.getElementById('yardagePerPanel');
     const totalYardage = document.getElementById('totalYardage');
+    
+    // Hide overage elements completely
+    const orderQuantityWithOverage = document.getElementById('orderQuantityWithOverage');
     const yardagePerPanelOverage = document.getElementById('yardagePerPanelOverage');
     const totalYardageOverage = document.getElementById('totalYardageOverage');
+    
+    // Hide all overage-related elements and their parent containers
+    const overageElements = [
+        orderQuantityWithOverage,
+        yardagePerPanelOverage,
+        totalYardageOverage
+    ];
+    
+    overageElements.forEach(element => {
+        if (element) {
+            const parentElement = element.parentElement;
+            if (parentElement) {
+                parentElement.style.display = 'none';
+            }
+        }
+    });
+    
+    // Hide the overage section header and divider
+    const orderSections = document.querySelectorAll('.order-section');
+    if (orderSections.length > 1) {
+        // Hide the second order section (overage section)
+        orderSections[1].style.display = 'none';
+    }
+    
+    // Also hide any dividers between sections
+    const dividers = document.querySelectorAll('.divider');
+    dividers.forEach(divider => {
+        divider.style.display = 'none';
+    });
     
     if (calculations.saleType === 'yard') {
         // Yard-based display
         const totalYardageValue = calculations.totalYardage;
-        const overageTotalYardage = Math.ceil(totalYardageValue * 1.2);
         
         if (orderQuantity) {
             orderQuantity.textContent = `Total yardage: ${totalYardageValue} yds`;
@@ -335,21 +366,11 @@ function updatePreviewInfo() {
         if (yardagePerPanelEl) yardagePerPanelEl.style.display = 'none';
         if (totalYardageEl) totalYardageEl.style.display = 'none';
         
-        if (orderQuantityWithOverage) {
-            orderQuantityWithOverage.textContent = `Total yardage: ${overageTotalYardage} yds`;
-        }
-        
-        const yardagePerPanelOverageEl = yardagePerPanelOverage ? yardagePerPanelOverage.parentElement : null;
-        const totalYardageOverageEl = totalYardageOverage ? totalYardageOverage.parentElement : null;
-        if (yardagePerPanelOverageEl) yardagePerPanelOverageEl.style.display = 'none';
-        if (totalYardageOverageEl) totalYardageOverageEl.style.display = 'none';
     } else {
         // Panel-based display - UPDATED: Simplified, no more complex length calculations
         const panelLength = calculations.panelLength;
         const yardagePerPanelValue = Math.round(panelLength / 3);
         const totalYardageValue = calculations.panelsNeeded * yardagePerPanelValue;
-        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
-        const overageTotalYardage = overagePanels * yardagePerPanelValue;
         
         if (orderQuantity) {
             orderQuantity.textContent = `[x${calculations.panelsNeeded}] ${panelLength}' Panels`;
@@ -366,22 +387,6 @@ function updatePreviewInfo() {
         }
         if (totalYardage) {
             totalYardage.textContent = `${totalYardageValue} yds`;
-        }
-        
-        if (orderQuantityWithOverage) {
-            orderQuantityWithOverage.textContent = `[x${overagePanels}] ${panelLength}' Panels`;
-        }
-        
-        const yardagePerPanelOverageEl = yardagePerPanelOverage ? yardagePerPanelOverage.parentElement : null;
-        const totalYardageOverageEl = totalYardageOverage ? totalYardageOverage.parentElement : null;
-        if (yardagePerPanelOverageEl) yardagePerPanelOverageEl.style.display = 'block';
-        if (totalYardageOverageEl) totalYardageOverageEl.style.display = 'block';
-        
-        if (yardagePerPanelOverage) {
-            yardagePerPanelOverage.textContent = `${yardagePerPanelValue} yds`;
-        }
-        if (totalYardageOverage) {
-            totalYardageOverage.textContent = `${overageTotalYardage} yds`;
         }
     }
 }
