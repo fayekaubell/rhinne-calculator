@@ -448,8 +448,6 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     pdf.text(pattern.name, centerX, currentY, { align: 'center' });
     currentY += lineHeight;
     
-    // REMOVED: SKU line completely
-    
     // NEW: Add product links after pattern name
     currentY = addProductLinksToPDF(pdf, centerX, currentY, lineHeight);
     
@@ -513,6 +511,47 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         // Body font for content
         pdf.setFontSize(bodyFontSize);
         pdf.setFont(undefined, 'normal');
+        pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Add extra line of spacing before overage section
+        currentY += lineHeight;
+        
+        // Header font for overage section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for overage content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+    } else {
+        // Panel-based calculations
+        const panelLength = calculations.panelLength;
+        const yardagePerPanel = Math.round(panelLength / 3);
+        const totalYardage = calculations.panelsNeeded * yardagePerPanel;
+        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
+        const overageYardage = overagePanels * yardagePerPanel;
+        
+        // Header font for section title - NEW TITLE
+        pdf.setFontSize(14);
+        pdf.setFont(undefined, 'bold');
+        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        
+        // Body font for content
+        pdf.setFontSize(bodyFontSize);
+        pdf.setFont(undefined, 'normal');
+        pdf.text(`[x${calculations.panelsNeeded}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
         pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
@@ -625,45 +664,10 @@ window.pdfGenerationAPI = {
     getSequentialPreviewNumber,
     addProductLinksToPDF,
     getProductLinksCount
-};;
-        
-        // Add extra line of spacing before overage section
-        currentY += lineHeight;
-        
-        // Header font for overage section title - NEW TITLE
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('It is standard to order 20% excess', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text('to address any installation issues =', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for overage content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`Total yardage: ${overageYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-    } else {
-        // Panel-based calculations
-        const panelLength = calculations.panelLength;
-        const yardagePerPanel = Math.round(panelLength / 3);
-        const totalYardage = calculations.panelsNeeded * yardagePerPanel;
-        const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
-        const overageYardage = overagePanels * yardagePerPanel;
-        
-        // Header font for section title - NEW TITLE
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, 'bold');
-        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        
-        // Body font for content
-        pdf.setFontSize(bodyFontSize);
-        pdf.setFont(undefined, 'normal');
-        pdf.text(`[x${calculations.panelsNeeded}] ${panelLength}' Panels`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text(`Yardage per panel: ${yardagePerPanel} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight;
-        pdf.text(`Total yardage: ${totalYardage} yds`, centerX, currentY, { align: 'center' });
-        currentY += lineHeight
+};
+
+// Also export individual functions for backward compatibility
+window.generatePDF = generatePDF;
+window.updateDownloadButtonState = updateDownloadButtonState;
+window.resetCalculator = resetCalculator;
+window.initializePDFGeneration = initializePDFGeneration;
