@@ -13,18 +13,10 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" as="script">
     
     <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- External libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- IMPORTANT: Load CSS Variables font configuration first -->
-    <script src="js/css-variables-font-config.js"></script>
-    <script src="config.js"></script>
-    
-    <!-- NEW: Load logging module after config -->
-    <script src="js/logging.js"></script>
-    
-    <!-- AUTO-RESIZE SYSTEM -->
-    <script src="js/auto-resize.js"></script>
     
     <!-- Performance and SEO optimizations -->
     <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
@@ -200,8 +192,6 @@
                         </div>
                     </div>
 
-                    <!-- REMOVED: Disclaimer section -->
-
                     <!-- Button Container for Download PDF and Submit Quote buttons -->
                     <div class="button-container" id="buttonContainer" style="display: none;">
                         <!-- Buttons will be added here by JavaScript -->
@@ -266,49 +256,109 @@
         }
     </style>
 
-<!-- JavaScript modules in correct order -->
-<script src="js/pattern-data.js"></script>
-<script src="js/calculator.js"></script>
-<!-- Canvas drawing modules -->
-<script src="js/canvas-drawing-core.js"></script>
-<script src="js/canvas-drawing-patterns.js"></script>
-<script src="js/canvas-drawing-sections.js"></script>
-<script src="js/canvas-drawing.js"></script>
-<!-- End canvas drawing modules -->
-<script src="js/preview.js"></script>
-<script src="js/pdf-generation.js"></script>
-<script src="js/quote-form.js"></script>
-    
+    <!-- FIXED: Load all scripts after DOM content, in correct order -->
     <script>
-        // Enhanced initialization with auto-resize integration
+        // Global error handler to catch any issues during loading
+        window.addEventListener('error', function(e) {
+            console.error('Script loading error:', e.filename, e.lineno, e.message);
+            const errorElement = document.getElementById('errorMessage');
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (errorElement && loadingMessage) {
+                loadingMessage.style.display = 'none';
+                errorElement.textContent = 'Error loading calculator. Please refresh the page.';
+                errorElement.style.display = 'block';
+            }
+        });
+
+        // Load scripts in correct order after DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Enhanced Wallpaper Calculator with auto-resize and logging initializing...');
+            console.log('🚀 DOM ready, starting script loading sequence...');
             
-            // Performance monitoring
-            const startTime = performance.now();
+            // Script loading sequence
+            const scriptsToLoad = [
+                'config.js',
+                'js/css-variables-font-config.js',
+                'js/logging.js',
+                'js/auto-resize.js',
+                'js/pattern-data.js',
+                'js/calculator.js',
+                'js/canvas-drawing-core.js',
+                'js/canvas-drawing-patterns.js',
+                'js/canvas-drawing-sections.js',
+                'js/canvas-drawing.js',
+                'js/preview.js',
+                'js/pdf-generation.js',
+                'js/quote-form.js'
+            ];
+
+            let loadedCount = 0;
+            const totalScripts = scriptsToLoad.length;
+
+            function loadNextScript() {
+                if (loadedCount >= totalScripts) {
+                    // All scripts loaded, initialize
+                    initializeCalculator();
+                    return;
+                }
+
+                const scriptSrc = scriptsToLoad[loadedCount];
+                const script = document.createElement('script');
+                script.src = scriptSrc;
+                
+                script.onload = function() {
+                    console.log(`✅ Loaded ${scriptSrc} (${loadedCount + 1}/${totalScripts})`);
+                    loadedCount++;
+                    loadNextScript();
+                };
+                
+                script.onerror = function() {
+                    console.error(`❌ Failed to load ${scriptSrc}`);
+                    const errorElement = document.getElementById('errorMessage');
+                    const loadingMessage = document.getElementById('loadingMessage');
+                    if (errorElement && loadingMessage) {
+                        loadingMessage.style.display = 'none';
+                        errorElement.textContent = `Error loading ${scriptSrc}. Please refresh the page.`;
+                        errorElement.style.display = 'block';
+                    }
+                };
+                
+                document.head.appendChild(script);
+            }
+
+            // Start loading scripts
+            loadNextScript();
+        });
+
+        // Initialize calculator function
+        function initializeCalculator() {
+            console.log('🚀 All scripts loaded, initializing calculator...');
             
             try {
-                // Initialize calculator
-                initializeCalculator();
+                // Check if all required functions are available
+                if (typeof window.calculatorAPI === 'undefined') {
+                    throw new Error('Calculator API not available');
+                }
+
+                // Initialize all modules
+                if (typeof initializeCalculator !== 'undefined') {
+                    window.calculatorAPI.initializeCalculator || initializeCalculator();
+                }
                 
-                // Initialize PDF generation
-                initializePDFGeneration();
+                if (typeof initializePDFGeneration !== 'undefined') {
+                    initializePDFGeneration();
+                }
                 
-                // Initialize quote form
-                initializeQuoteForm();
-                
-                // Enhanced event listeners with auto-resize triggers
+                if (typeof initializeQuoteForm !== 'undefined') {
+                    initializeQuoteForm();
+                }
+
+                // Add event listeners
                 const generateBtn = document.getElementById('generatePreviewBtn');
                 if (generateBtn) {
                     generateBtn.addEventListener('click', function() {
-                        // Add loading state
                         generateBtn.disabled = true;
                         generateBtn.textContent = 'Generating...';
                         
-                        // Announce to screen readers
-                        announceToScreenReader('Generating wallpaper preview...');
-                        
-                        // Trigger resize after state change
                         setTimeout(() => {
                             if (window.autoResize) window.autoResize.updateHeight();
                         }, 100);
@@ -318,19 +368,14 @@
                                 generateBtn.disabled = false;
                                 generateBtn.textContent = 'Generate Preview';
                                 
-                                // Trigger resize after preview generation
                                 setTimeout(() => {
                                     if (window.autoResize) window.autoResize.updateHeight();
-                                    
-                                    // Dispatch custom event for auto-resize system
                                     window.dispatchEvent(new CustomEvent('previewComplete'));
                                 }, 200);
                                 
-                                // Add download and quote buttons after preview is generated
                                 setTimeout(() => {
                                     addDownloadAndQuoteButtons();
                                     
-                                    // Final resize after buttons added
                                     setTimeout(() => {
                                         if (window.autoResize) window.autoResize.updateHeight();
                                     }, 100);
@@ -339,60 +384,33 @@
                         }, 100);
                     });
                 }
-                
-                // Add enhanced input validation and formatting
-                addInputEnhancements();
-                
-                // Add keyboard shortcuts
-                addKeyboardShortcuts();
-                
-                // Trigger initial resize after everything loads
+
+                // Trigger initial resize
                 setTimeout(() => {
                     if (window.autoResize) window.autoResize.updateHeight();
                 }, 1000);
-                
-                const endTime = performance.now();
-                console.log(`✅ Calculator with auto-resize and logging initialized in ${Math.round(endTime - startTime)}ms`);
-                
+
+                console.log('✅ Calculator initialized successfully');
+
             } catch (error) {
                 console.error('❌ Failed to initialize calculator:', error);
-                showErrorMessage('Failed to initialize calculator. Please refresh the page.');
+                const errorElement = document.getElementById('errorMessage');
+                const loadingMessage = document.getElementById('loadingMessage');
+                if (errorElement && loadingMessage) {
+                    loadingMessage.style.display = 'none';
+                    errorElement.textContent = 'Failed to initialize calculator. Please refresh the page.';
+                    errorElement.style.display = 'block';
+                }
             }
-        });
-        
-        // Enhanced input validation and formatting
-        function addInputEnhancements() {
-            const inputs = document.querySelectorAll('input[type="number"]');
-            
-            inputs.forEach(input => {
-                // Add real-time validation
-                input.addEventListener('input', function() {
-                    const value = parseFloat(this.value);
-                    const min = parseFloat(this.min);
-                    const max = parseFloat(this.max);
-                    
-                    if (value < min) {
-                        this.value = min;
-                    } else if (value > max) {
-                        this.value = max;
-                    }
-                    
-                    // Remove invalid class if value is now valid
-                    this.classList.remove('invalid');
-                });
-                
-                // Add blur formatting
-                input.addEventListener('blur', function() {
-                    if (this.value && !isNaN(this.value)) {
-                        this.value = parseFloat(this.value).toString();
-                    }
-                });
-                
-                // Prevent invalid characters
-                input.addEventListener('keypress', function(e) {
-                    const char = String.fromCharCode(e.which);
-                    if (!/[0-9.]/.test(char) && e.which !== 8 && e.which !== 0) {
-                        e.preventDefault();
-                    }
-                });
-            });
+        }
+
+        // Helper function for screen reader announcements
+        function announceToScreenReader(message) {
+            const announcements = document.getElementById('announcements');
+            if (announcements) {
+                announcements.textContent = message;
+            }
+        }
+    </script>
+</body>
+</html>
