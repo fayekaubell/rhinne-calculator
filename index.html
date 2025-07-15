@@ -1,185 +1,19 @@
-<!-- FINAL FIXED: Complete initialization script -->
-    <script>
-        // Global error handler to catch any issues during loading
-        window.addEventListener('error', function(e) {
-            console.error('Script loading error:', e.filename, e.lineno, e.message);
-            const errorElement = document.getElementById('errorMessage');
-            const loadingMessage = document.getElementById('loadingMessage');
-            if (errorElement && loadingMessage) {
-                loadingMessage.style.display = 'none';
-                errorElement.textContent = 'Error loading calculator. Please refresh the page.';
-                errorElement.style.display = 'block';
-            }
-        });
-
-        // Global variables that need to be available
-        let currentPreview = null;
-        let patterns = {};
-        let patternImage = null;
-        let imageLoaded = false;
-
-        // Load scripts in correct order after DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 DOM ready, starting script loading sequence...');
+<!-- Add this script at the very end of your body tag, just before </body> -->
+<script>
+// Simple fix for generate preview button - add this after all other scripts
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for everything to be fully loaded
+    setTimeout(function() {
+        console.log('🔧 Setting up generate preview button (simple fix)...');
+        
+        const generateBtn = document.getElementById('generatePreviewBtn');
+        if (generateBtn && !generateBtn.onclick) {
+            console.log('🎯 Attaching event listener to generate preview button...');
             
-            // Script loading sequence
-            const scriptsToLoad = [
-                'config.js',
-                'js/css-variables-font-config.js',
-                'js/logging.js',
-                'js/auto-resize.js',
-                'js/pattern-data.js',
-                'js/calculator.js',
-                'js/canvas-drawing-core.js',
-                'js/canvas-drawing-patterns.js',
-                'js/canvas-drawing-sections.js',
-                'js/canvas-drawing.js',
-                'js/preview.js',
-                'js/pdf-generation.js',
-                'js/quote-form.js'
-            ];
-
-            let loadedCount = 0;
-            const totalScripts = scriptsToLoad.length;
-
-            function loadNextScript() {
-                if (loadedCount >= totalScripts) {
-                    // All scripts loaded, initialize
-                    console.log('🎉 All scripts loaded, starting initialization...');
-                    setTimeout(() => {
-                        initializeEverything();
-                    }, 500); // Small delay to ensure all scripts are fully processed
-                    return;
-                }
-
-                const scriptSrc = scriptsToLoad[loadedCount];
-                const script = document.createElement('script');
-                script.src = scriptSrc;
-                
-                script.onload = function() {
-                    console.log(`✅ Loaded ${scriptSrc} (${loadedCount + 1}/${totalScripts})`);
-                    loadedCount++;
-                    
-                    // Update global variables from pattern-data.js if they exist
-                    if (window.patterns) {
-                        patterns = window.patterns;
-                    }
-                    if (window.currentPreview) {
-                        currentPreview = window.currentPreview;
-                    }
-                    if (window.patternImage) {
-                        patternImage = window.patternImage;
-                    }
-                    if (window.imageLoaded !== undefined) {
-                        imageLoaded = window.imageLoaded;
-                    }
-                    
-                    loadNextScript();
-                };
-                
-                script.onerror = function() {
-                    console.error(`❌ Failed to load ${scriptSrc}`);
-                    const errorElement = document.getElementById('errorMessage');
-                    const loadingMessage = document.getElementById('loadingMessage');
-                    if (errorElement && loadingMessage) {
-                        loadingMessage.style.display = 'none';
-                        errorElement.textContent = `Error loading ${scriptSrc}. Please refresh the page.`;
-                        errorElement.style.display = 'block';
-                    }
-                };
-                
-                document.head.appendChild(script);
-            }
-
-            // Start loading scripts
-            loadNextScript();
-        });
-
-        // Initialize everything after all scripts are loaded
-        function initializeEverything() {
-            console.log('🚀 Starting full calculator initialization...');
-            
-            try {
-                // Ensure global variables are accessible
-                window.currentPreview = currentPreview;
-                window.patterns = patterns;
-                window.patternImage = patternImage;
-                window.imageLoaded = imageLoaded;
-
-                // Initialize all modules
-                console.log('🔧 Initializing calculator module...');
-                if (typeof initializeCalculator === 'function') {
-                    initializeCalculator();
-                    console.log('✅ Calculator module initialized');
-                } else if (window.calculatorAPI && typeof window.calculatorAPI.initializeCalculator === 'function') {
-                    window.calculatorAPI.initializeCalculator();
-                    console.log('✅ Calculator module initialized via API');
-                } else {
-                    console.error('❌ initializeCalculator function not found');
-                    throw new Error('Calculator initialization function not available');
-                }
-                
-                console.log('🔧 Initializing PDF generation...');
-                if (typeof initializePDFGeneration === 'function') {
-                    initializePDFGeneration();
-                    console.log('✅ PDF generation initialized');
-                } else {
-                    console.warn('⚠️ initializePDFGeneration function not found');
-                }
-                
-                console.log('🔧 Initializing quote form...');
-                if (typeof initializeQuoteForm === 'function') {
-                    initializeQuoteForm();
-                    console.log('✅ Quote form initialized');
-                } else {
-                    console.warn('⚠️ initializeQuoteForm function not found');
-                }
-
-                // MOST IMPORTANT: Set up the generate preview button
-                console.log('🔧 Setting up generate preview button...');
-                setupGeneratePreviewButton();
-
-                // Trigger initial resize
-                setTimeout(() => {
-                    if (window.autoResize) {
-                        window.autoResize.updateHeight();
-                    }
-                }, 1000);
-
-                console.log('✅ Calculator fully initialized and ready to use!');
-
-            } catch (error) {
-                console.error('❌ Failed to initialize calculator:', error);
-                const errorElement = document.getElementById('errorMessage');
-                const loadingMessage = document.getElementById('loadingMessage');
-                if (errorElement && loadingMessage) {
-                    loadingMessage.style.display = 'none';
-                    errorElement.textContent = 'Failed to initialize calculator: ' + error.message;
-                    errorElement.style.display = 'block';
-                }
-            }
-        }
-
-        // FIXED: Simplified and more reliable button setup
-        function setupGeneratePreviewButton() {
-            console.log('🎯 Setting up generate preview button...');
-            
-            const generateBtn = document.getElementById('generatePreviewBtn');
-            if (!generateBtn) {
-                console.error('❌ Generate preview button not found!');
-                return;
-            }
-
-            console.log('✅ Generate preview button found');
-
-            // Clear any existing handlers
-            generateBtn.onclick = null;
-            
-            // Use the same working pattern from your manual test
             generateBtn.onclick = function() {
                 console.log('🎯 Generate preview button clicked!');
                 
-                // Validate that we have a pattern selected
+                // Validate pattern selection
                 const selectedPattern = getSelectedPattern();
                 if (!selectedPattern) {
                     alert('Please select a wallpaper pattern');
@@ -206,83 +40,31 @@
                 generateBtn.disabled = true;
                 generateBtn.textContent = 'Generating...';
                 
-                // Announce to screen readers
-                announceToScreenReader('Generating wallpaper preview...');
-                
-                // Trigger resize after state change
-                setTimeout(() => {
-                    if (window.autoResize) window.autoResize.updateHeight();
-                }, 100);
-                
-                // Generate the preview
+                // Generate preview
                 generatePreview().then(() => {
-                    console.log('✅ Preview generated successfully!');
-                    
-                    // Reset button state
                     generateBtn.disabled = false;
                     generateBtn.textContent = 'Generate Preview';
                     
-                    // Trigger resize after preview generation
+                    // Add buttons after preview
                     setTimeout(() => {
-                        if (window.autoResize) window.autoResize.updateHeight();
-                        window.dispatchEvent(new CustomEvent('previewComplete'));
-                    }, 200);
-                    
-                    // Add download and quote buttons after preview is generated
-                    setTimeout(() => {
-                        console.log('🔧 Adding download and quote buttons...');
-                        
                         if (typeof addDownloadAndQuoteButtons === 'function') {
                             addDownloadAndQuoteButtons();
-                            console.log('✅ Download and quote buttons added');
-                        } else if (typeof addDownloadButton === 'function') {
-                            addDownloadButton();
-                            console.log('✅ Download button added');
-                        } else {
-                            console.warn('⚠️ No button functions available');
                         }
-                        
-                        // Final resize after buttons added
-                        setTimeout(() => {
-                            if (window.autoResize) window.autoResize.updateHeight();
-                        }, 100);
                     }, 500);
                     
                 }).catch((error) => {
-                    console.error('❌ Preview generation failed:', error);
-                    
-                    // Reset button state
                     generateBtn.disabled = false;
                     generateBtn.textContent = 'Generate Preview';
-                    
-                    // Show error message
                     alert('Error generating preview: ' + error.message);
                 });
             };
-
-            console.log('✅ Generate preview button event handler attached successfully!');
             
-            // Test that the button handler is working
-            if (generateBtn.onclick) {
-                console.log('✅ Button onclick handler confirmed to be set');
-            } else {
-                console.error('❌ Button onclick handler failed to set');
-            }
+            console.log('✅ Generate preview button event listener attached!');
+        } else if (generateBtn && generateBtn.onclick) {
+            console.log('✅ Generate preview button already has event listener');
+        } else {
+            console.log('❌ Generate preview button not found');
         }
-
-        // Helper function for screen reader announcements
-        function announceToScreenReader(message) {
-            const announcements = document.getElementById('announcements');
-            if (announcements) {
-                announcements.textContent = message;
-            }
-        }
-
-        // BACKUP: If automatic initialization fails, provide manual setup
-        window.manualSetup = function() {
-            console.log('🔧 Running manual setup...');
-            setupGeneratePreviewButton();
-        };
-
-        console.log('📋 Initialization script loaded. If button doesn\'t work automatically, try: manualSetup()');
-    </script>
+    }, 3000); // Wait 3 seconds for everything to load
+});
+</script>
