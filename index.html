@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallpaper Calculator</title>
+    <title>Wallpaper Yardage Calculator</title>
     <meta name="description" content="Professional wallpaper calculator with visual preview - calculate panels and yardage needed for your wallpaper project">
     <meta name="keywords" content="wallpaper calculator, wallpaper estimator, pattern preview, interior design">
     
@@ -31,14 +31,14 @@
     <meta name="theme-color" content="#3498db">
     
     <!-- Open Graph meta tags for better sharing -->
-    <meta property="og:title" content="Wallpaper Calculator">
+    <meta property="og:title" content="Wallpaper Yardage Calculator">
     <meta property="og:description" content="Professional wallpaper calculator with visual preview">
     <meta property="og:type" content="website">
 </head>
 <body>
     <div class="container">
         <div class="page-title">
-            <h1 id="pageTitle" style="display: none;">Wallpaper Preview Calculator</h1>
+            <h1 id="pageTitle">Wallpaper Yardage Calculator</h1>
             <p id="pageSubtitle">Enter wall dimensions to estimate how much you'll need to purchase.<br>Submit results if you'd like to receive a quote.<br>We'll be in touch within one business day. (probably sooner)</p>
         </div>
 
@@ -396,73 +396,3 @@
                     }
                 });
             });
-        }
-        
-        // Keyboard shortcuts
-        function addKeyboardShortcuts() {
-            document.addEventListener('keydown', function(e) {
-                // Ctrl/Cmd + Enter to generate preview
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    const generateBtn = document.getElementById('generatePreviewBtn');
-                    if (generateBtn && !generateBtn.disabled) {
-                        generateBtn.click();
-                    }
-                }
-                
-                // Escape to close modal
-                if (e.key === 'Escape') {
-                    const modal = document.querySelector('.canvas-modal-enhanced');
-                    if (modal) {
-                        modal.remove();
-                    }
-                }
-            });
-        }
-        
-        // Screen reader announcements
-        function announceToScreenReader(message) {
-            const announcements = document.getElementById('announcements');
-            if (announcements) {
-                announcements.textContent = message;
-                setTimeout(() => {
-                    announcements.textContent = '';
-                }, 1000);
-            }
-        }
-        
-        // Enhanced error handling
-        window.addEventListener('error', function(e) {
-            console.error('Global error:', e);
-            showErrorMessage('An unexpected error occurred. Please refresh the page.');
-        });
-        
-        // Auto-resize integration for form changes
-        document.addEventListener('change', function(e) {
-            if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') {
-                // Small delay to allow for any layout changes
-                setTimeout(() => {
-                    if (window.autoResize) window.autoResize.updateHeight();
-                }, 100);
-            }
-        });
-    </script>
-    
-    <!-- Schema.org structured data for SEO -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Wallpaper Calculator",
-        "description": "Professional wallpaper calculator with visual preview",
-        "applicationCategory": "DesignApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        }
-    }
-    </script>
-</body>
-</html>
