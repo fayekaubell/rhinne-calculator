@@ -3,6 +3,7 @@
 // UPDATED: Added Google Sheets logging integration
 // UPDATED: Added product links functionality
 // UPDATED: Changed titles, kept overage section, removed disclaimer
+// UPDATED: Removed SKU from preview titles
 
 // Generate preview function - main coordination logic
 async function generatePreview() {
@@ -94,8 +95,9 @@ async function generatePreview() {
             formattedHeight: formattedHeight
         };
         
+        // UPDATED: Set title without SKU
         if (previewTitle) {
-            previewTitle.textContent = `${pattern.name}: ${pattern.sku || 'N/A'}: ${formattedWidth}w x ${formattedHeight}h Wall`;
+            previewTitle.textContent = `${pattern.name}: ${formattedWidth}w x ${formattedHeight}h Wall`;
         }
         
         // Add product links after setting the preview title
@@ -458,7 +460,8 @@ async function openHighResInNewTab() {
         
         // Create the content for the new tab
         const { pattern, formattedWidth, formattedHeight } = currentPreview;
-        const title = `${pattern.name} - ${pattern.sku} - ${formattedWidth}w x ${formattedHeight}h`;
+        // UPDATED: Title without SKU
+        const title = `${pattern.name} - ${formattedWidth}w x ${formattedHeight}h`;
         
         // UPDATED: Generate product links HTML for the new tab
         const productLinksHtml = generateProductLinksHtml(pattern);
@@ -575,7 +578,7 @@ async function openHighResInNewTab() {
 <body>
     <div class="header">
         <h1>${pattern.name}</h1>
-        <p>${pattern.sku || 'N/A'} • ${formattedWidth}w x ${formattedHeight}h Wall</p>
+        <p>${formattedWidth}w x ${formattedHeight}h Wall</p>
         ${productLinksHtml}
     </div>
     
@@ -656,7 +659,7 @@ async function openHighResInNewTab() {
         
         function downloadImage() {
             const link = document.createElement('a');
-            link.download = '${pattern.sku || 'wallpaper'}-preview-${Date.now()}.png';
+            link.download = '${pattern.name.replace(/[^a-zA-Z0-9]/g, '-')}-preview-${Date.now()}.png';
             link.href = '${canvasDataUrl}';
             link.click();
         }
@@ -687,7 +690,7 @@ async function openHighResInNewTab() {
             // Popup blocked - fallback to download
             console.warn('Popup blocked, offering download instead');
             const link = document.createElement('a');
-            link.download = `${pattern.sku || 'wallpaper'}-preview-${Date.now()}.png`;
+            link.download = `${pattern.name.replace(/[^a-zA-Z0-9]/g, '-')}-preview-${Date.now()}.png`;
             link.href = canvasDataUrl;
             link.click();
             
