@@ -1,5 +1,6 @@
 // Calculator Module - UI coordination and initialization with Custom Searchable Dropdown
 // Data loading functions moved to pattern-data.js
+// UPDATED: Removed SKU from dropdown display
 
 // Global variables for dropdown state
 let allPatterns = [];
@@ -154,21 +155,16 @@ function renderOptions() {
             thumbnail.style.display = 'none';
         }
         
-        // Create text content
+        // Create text content - UPDATED: Only show pattern name, no SKU
         const textDiv = document.createElement('div');
         textDiv.className = 'option-text';
         textDiv.textContent = pattern.name;
         
-        const skuSpan = document.createElement('span');
-        skuSpan.className = 'option-sku';
-        skuSpan.textContent = pattern.sku ? `/ ${pattern.sku}` : '';
+        // REMOVED: SKU display entirely
         
         // Assemble option
         option.appendChild(thumbnail);
         option.appendChild(textDiv);
-        if (pattern.sku) {
-            textDiv.appendChild(skuSpan);
-        }
         
         // Click handler
         option.addEventListener('click', () => selectPattern(pattern.id));
@@ -275,8 +271,8 @@ function handleSearch(e) {
     } else {
         filteredPatterns = allPatterns.filter(pattern => {
             const nameMatch = pattern.name.toLowerCase().includes(searchTerm);
-            const skuMatch = pattern.sku && pattern.sku.toLowerCase().includes(searchTerm);
-            return nameMatch || skuMatch;
+            // REMOVED: SKU matching since we're not displaying SKUs
+            return nameMatch;
         });
     }
     
@@ -359,11 +355,11 @@ function selectPattern(patternId) {
     
     selectedPatternId = patternId;
     
-    // Update visual display
+    // Update visual display - UPDATED: Only show pattern name, no SKU
     const selectedText = document.getElementById('dropdownSelected').querySelector('.selected-text');
     const hiddenInput = document.getElementById('pattern');
     
-    selectedText.textContent = pattern.sku ? `${pattern.name} / ${pattern.sku}` : pattern.name;
+    selectedText.textContent = pattern.name;
     selectedText.classList.remove('placeholder');
     
     hiddenInput.value = patternId;
