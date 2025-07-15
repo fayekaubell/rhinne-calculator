@@ -1,6 +1,6 @@
 // Configuration for Wallpaper Calculator
 // Modify these settings to customize for your business
-// UPDATED: Added Google Sheets logging configuration for Faye Bell with NEW WEBHOOK URL
+// UPDATED: New Google Sheets logging configuration with new webhook URL and email
 
 const CONFIG = {
   // Business Information
@@ -19,13 +19,13 @@ const CONFIG = {
     imageBaseUrl: "https://fayekaubell.github.io/rhinne-calculator/data/patterns/"
   },
 
-  // Google Sheets Logging Configuration - UPDATED WITH NEW WEBHOOK URL
+  // Google Sheets Logging Configuration - UPDATED WITH NEW WEBHOOK URL AND EMAIL
   logging: {
     // Enable/disable logging system
     enabled: true,
     
-    // Google Apps Script webhook URL - UPDATED FOR NEW DEPLOYMENT
-    webhookUrl: "https://script.google.com/macros/s/AKfycbwmpNTzocBZsGzqLJVtq7ReoV7o7T8Rgs9gt1z6dHLE35xZ64nDoJjxmqi2so38fkB1EA/exec",
+    // UPDATED: New Google Apps Script webhook URL - CORRECTED WITH ACTUAL DEPLOYMENT URL
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz0inXDODu8dUY-FfuTk9OIeucsL8V-zFifhbRkMqYyshqZ7CotisucF_KpRIGidlWT/exec",
     
     // Retry settings for webhook requests
     retryAttempts: 3,
