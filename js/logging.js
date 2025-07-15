@@ -1,6 +1,7 @@
 // Logging Module - Google Sheets Integration for Wallpaper Calculator
 // CORS-FREE VERSION: Uses GET requests with URL parameters to avoid CORS issues
 // UPDATED: Sequential preview numbers from Google Sheets
+// UPDATED: Remove SKU from filename generation
 
 class CalculatorLogger {
     constructor() {
@@ -133,7 +134,8 @@ class CalculatorLogger {
         if (!window.currentPreview?.pattern) return { name: '', sku: '', display: '' };
         
         const { pattern } = window.currentPreview;
-        const display = pattern.sku ? `${pattern.name} / ${pattern.sku}` : pattern.name;
+        // UPDATED: Display only shows pattern name, no SKU
+        const display = pattern.name;
         
         return {
             name: pattern.name || '',
@@ -336,13 +338,14 @@ class CalculatorLogger {
         console.log(`📊 Calculator continues to function normally despite ${actionType} logging error`);
     }
     
+    // UPDATED: Generate PDF filename without SKU - new format: Rhinne-PatternName-Wallpaper-Preview-PreviewNumber
     generatePDFFilename() {
-        if (!window.currentPreview?.pattern) return 'wallpaper-preview.pdf';
+        if (!window.currentPreview?.pattern) return 'Rhinne-Wallpaper-Preview.pdf';
         
         const { pattern } = window.currentPreview;
-        const sku = pattern.sku || 'unknown';
+        const cleanPatternName = pattern.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
         const previewNum = this.previewNumber || this.generateFallbackPreviewNumber();
-        return `Faye-Bell-Wallpaper-Preview-${sku}-${previewNum}.pdf`;
+        return `Rhinne-${cleanPatternName}-Wallpaper-Preview-${previewNum}.pdf`;
     }
     
     // ADDED: Generate fallback preview number when webhook fails
