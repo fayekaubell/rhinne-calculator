@@ -1,5 +1,6 @@
 // Pattern Data Module - Data loading, CSV parsing, and calculations
 // UPDATED: Simplified calculations - cap panels at max available length and anchor to bottom
+// FIXED: Ensure patterns global variable is properly set
 
 // Global variables for data
 let patterns = {};
@@ -7,10 +8,15 @@ let patternsLoaded = false;
 let patternImage = null;
 let imageLoaded = false;
 
+// Make patterns available globally immediately
+window.patterns = patterns;
+
 // Load patterns from CSV file
 async function loadPatternsFromCSV() {
     try {
         console.log('📊 Loading patterns from CSV...');
+        console.log('📍 CONFIG check:', CONFIG);
+        console.log('📍 CSV path:', CONFIG.data.patternsCSV);
         
         const response = await fetch(CONFIG.data.patternsCSV);
         if (!response.ok) {
@@ -18,7 +24,8 @@ async function loadPatternsFromCSV() {
         }
         
         const csvText = await response.text();
-        console.log('📄 CSV loaded, parsing...');
+        console.log('📄 CSV loaded, length:', csvText.length, 'chars');
+        console.log('📄 CSV first 200 chars:', csvText.substring(0, 200));
         
         // Parse CSV using Papa Parse
         const parsed = Papa.parse(csvText, {
@@ -33,26 +40,38 @@ async function loadPatternsFromCSV() {
         }
         
         console.log('📋 CSV parsed successfully:', parsed.data.length, 'patterns found');
+        console.log('📋 Sample parsed row:', parsed.data[0]);
         
         // Convert CSV data to pattern objects
         patterns = {};
+        let successCount = 0;
         parsed.data.forEach((row, index) => {
             try {
                 const pattern = createPatternFromCSV(row);
                 if (pattern) {
                     patterns[pattern.id] = pattern;
+                    successCount++;
+                    console.log(`✅ Pattern ${successCount}: ${pattern.name} (${pattern.id})`);
                 }
             } catch (error) {
                 console.error(`❌ Error processing pattern at row ${index + 1}:`, error, row);
             }
         });
         
+        // Update global reference
+        window.patterns = patterns;
+        
         patternsLoaded = true;
         console.log(`🎉 Total patterns loaded: ${Object.keys(patterns).length}`);
+        console.log('🎉 Pattern IDs:', Object.keys(patterns));
         return patterns;
         
     } catch (error) {
         console.error('❌ Error loading patterns from CSV:', error);
+        console.error('❌ Error details:', {
+            message: error.message,
+            stack: error.stack
+        });
         
         // Fall back to demo pattern
         patterns = {
@@ -77,14 +96,21 @@ async function loadPatternsFromCSV() {
                 patternMatch: 'straight'
             }
         };
+        
+        // Update global reference
+        window.patterns = patterns;
+        
         patternsLoaded = true;
         console.log('🔄 Using demo pattern as fallback');
+        console.log('🔄 Demo pattern available:', patterns);
         return patterns;
     }
 }
 
 // Create pattern object from CSV row
 function createPatternFromCSV(row) {
+    console.log('🔨 Creating pattern from row:', row);
+    
     if (!row.pattern_name || !row.sku) {
         console.warn('⚠️ Skipping row with missing required fields:', row);
         return null;
@@ -130,7 +156,7 @@ function createPatternFromCSV(row) {
         thumbnailUrl = imageUrl;
     }
     
-    return {
+    const pattern = {
         id: patternId,
         name: row.pattern_name,
         sku: row.sku,
@@ -153,6 +179,9 @@ function createPatternFromCSV(row) {
         product_page_url: row.product_page_url || '',
         product_360_url: row['360_view_url'] || ''
     };
+    
+    console.log('✅ Created pattern:', pattern.name, pattern.id);
+    return pattern;
 }
 
 // Preload pattern images
