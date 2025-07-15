@@ -95,7 +95,7 @@ async function generatePreview() {
             formattedHeight: formattedHeight
         };
         
-        // UPDATED: Set title without SKU
+        // UPDATED: Preview title without SKU
         if (previewTitle) {
             previewTitle.textContent = `${pattern.name}: ${formattedWidth}w x ${formattedHeight}h Wall`;
         }
@@ -458,9 +458,8 @@ async function openHighResInNewTab() {
             throw new Error('Failed to generate high-resolution canvas');
         }
         
-        // Create the content for the new tab
+        // Create the content for the new tab (UPDATED: No SKU in title)
         const { pattern, formattedWidth, formattedHeight } = currentPreview;
-        // UPDATED: Title without SKU
         const title = `${pattern.name} - ${formattedWidth}w x ${formattedHeight}h`;
         
         // UPDATED: Generate product links HTML for the new tab
