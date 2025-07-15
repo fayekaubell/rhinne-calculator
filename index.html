@@ -173,7 +173,7 @@
 
                 <div class="preview-info" role="complementary" aria-label="Order quantity information">
                     <div class="order-section">
-                        <h3>Order quantity:</h3>
+                        <h3>Minimum Yardage Needed (no excess included) =</h3>
                         <div class="order-line" id="orderQuantity" aria-live="polite">
                             [x0] 0' Panels
                         </div>
@@ -185,7 +185,21 @@
                         </div>
                     </div>
 
-                    <!-- REMOVED: 20% overage section and divider -->
+                    <hr class="divider">
+
+                    <div class="order-section">
+                        <h3>It is standard to order 20% excess to address any installation issues =</h3>
+                        <div class="order-line" id="orderQuantityWithOverage" aria-live="polite">
+                            [x0] 0' Panels
+                        </div>
+                        <div class="order-line">
+                            <strong>Yardage per panel:</strong> <span id="yardagePerPanelOverage">0 yds</span>
+                        </div>
+                        <div class="order-line">
+                            <strong>Total yardage:</strong> <span id="totalYardageOverage">0 yds</span>
+                        </div>
+                    </div>
+
                     <!-- REMOVED: Disclaimer section -->
 
                     <!-- Button Container for Download PDF and Submit Quote buttons -->
