@@ -66,7 +66,7 @@ const CONFIG = {
   ui: {
     // Text customization
     text: {
-      pageTitle: "",  // Empty - website's page title will be used
+      pageTitle: "Wallpaper Yardage Calculator",  // UPDATED: Set the title instead of empty string
       pageSubtitle: "Measure your walls to estimate the quantity of wallpaper needed for your project.",
       
       // Measuring guide
