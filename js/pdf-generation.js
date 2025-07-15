@@ -292,7 +292,7 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     
     let totalHeight = headerHeight; // Title area
     
-    // Pattern details section - UPDATED: No SKU line
+    // Pattern details section - UPDATED: No SKU line, accounting for line break in section titles
     let patternDetailsLines = 4; // Base lines (name, wall dimensions, repeat, match, preview number, date) - reduced by 1
     
     // NEW: Add lines for product links
@@ -304,11 +304,11 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     totalHeight += lineHeight * patternDetailsLines;
     totalHeight += sectionSpacing;
     
-    // Order quantity section - count lines based on pattern type (with overage)
+    // Order quantity section - count lines based on pattern type (with overage and line breaks)
     if (calculations.saleType === 'yard') {
-        totalHeight += lineHeight * 6; // Basic + overage lines for yard patterns
+        totalHeight += lineHeight * 8; // Basic + overage lines for yard patterns (increased for line breaks)
     } else {
-        totalHeight += lineHeight * 10; // Basic + overage lines for panel patterns
+        totalHeight += lineHeight * 12; // Basic + overage lines for panel patterns (increased for line breaks)
     }
     totalHeight += sectionSpacing;
     
@@ -502,10 +502,12 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         const totalYardage = calculations.totalYardage;
         const overageYardage = Math.ceil(totalYardage * 1.2);
         
-        // Header font for section title - NEW TITLE
+        // Header font for section title - NEW TITLE with line break
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
+        pdf.text('Minimum Yardage Needed', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('(no excess included) =', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
@@ -539,10 +541,12 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
         const overagePanels = Math.ceil(calculations.panelsNeeded * 1.2);
         const overageYardage = overagePanels * yardagePerPanel;
         
-        // Header font for section title - NEW TITLE
+        // Header font for section title - NEW TITLE with line break
         pdf.setFontSize(14);
         pdf.setFont(undefined, 'bold');
-        pdf.text('Minimum Yardage Needed (no excess included) =', centerX, currentY, { align: 'center' });
+        pdf.text('Minimum Yardage Needed', centerX, currentY, { align: 'center' });
+        currentY += lineHeight;
+        pdf.text('(no excess included) =', centerX, currentY, { align: 'center' });
         currentY += lineHeight;
         
         // Body font for content
