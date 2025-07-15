@@ -65,10 +65,10 @@ async function generatePDF() {
         // Add enhanced text content to right side with vertical centering
         await addEnhancedTextContentToPDF(pdf, canvasAreaWidth + canvasMargin, canvasMargin, textAreaWidth, canvasAreaHeight);
 
-        // UPDATED: Generate filename with new format - Rhinne-PatternName-Wallpaper-Preview-PreviewNumber
+        // UPDATED: Generate filename with new format: "Rhinne-PatternName-Wallpaper-Preview-PreviewNumber"
         const { pattern } = currentPreview;
         const sequentialNumber = getSequentialPreviewNumber();
-        const cleanPatternName = pattern.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+        const cleanPatternName = pattern.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
         const filename = `Rhinne-${cleanPatternName}-Wallpaper-Preview-${sequentialNumber}.pdf`;
 
         // LOGGING: Dispatch logging event for PDF download
@@ -86,11 +86,11 @@ async function generatePDF() {
             }, 100);
         }
 
-        console.log('💾 Saving PDF with sequential numbering:', filename);
+        console.log('💾 Saving PDF with new filename format:', filename);
         // Save PDF
         pdf.save(filename);
         
-        console.log('✅ Enhanced PDF generated successfully with sequential number:', filename);
+        console.log('✅ Enhanced PDF generated successfully with new filename:', filename);
 
         // Show success state with reset functionality
         updateDownloadButtonState(downloadBtn, 'success');
@@ -292,8 +292,8 @@ function calculateTotalContentHeight(pdf, maxWidth) {
     
     let totalHeight = headerHeight; // Title area
     
-    // Pattern details section - UPDATED: Removed SKU line
-    let patternDetailsLines = 4; // Base lines (name, wall dimensions, repeat, match, preview number, date) - reduced by 1 for no SKU
+    // Pattern details section - UPDATED: No SKU line
+    let patternDetailsLines = 4; // Base lines (name, wall dimensions, repeat, match, preview number, date) - reduced by 1
     
     // NEW: Add lines for product links
     const productLinksCount = getProductLinksCount(pattern);
@@ -408,7 +408,7 @@ function addProductLinksToPDF(pdf, centerX, currentY, lineHeight) {
     return linkY;
 }
 
-// UPDATED: Add enhanced text content to PDF with new titles, kept overage, removed disclaimer, removed SKU
+// UPDATED: Add enhanced text content to PDF with new titles, kept overage, removed disclaimer, no SKU
 async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     const { pattern, calculations, formattedWidth, formattedHeight } = currentPreview;
     
@@ -442,7 +442,7 @@ async function addEnhancedTextContentToPDF(pdf, x, y, maxWidth, maxHeight) {
     }
     
     // Pattern Details Section
-    // Pattern name in header font
+    // Pattern name in header font (UPDATED: No SKU on separate line)
     pdf.setFontSize(14);
     pdf.setFont(undefined, 'bold');
     pdf.text(pattern.name, centerX, currentY, { align: 'center' });
@@ -665,9 +665,3 @@ window.pdfGenerationAPI = {
     addProductLinksToPDF,
     getProductLinksCount
 };
-
-// Also export individual functions for backward compatibility
-window.generatePDF = generatePDF;
-window.updateDownloadButtonState = updateDownloadButtonState;
-window.resetCalculator = resetCalculator;
-window.initializePDFGeneration = initializePDFGeneration;
