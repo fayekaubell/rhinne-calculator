@@ -1,21 +1,22 @@
 // Enhanced CSS Variables Font Configuration System for Wallpaper Calculator
 // Now reads presets from CONFIG.js while maintaining flexibility
+// UPDATED: Changed default preset to use Georgia fonts
 
 class CSSVariablesFontConfig {
     constructor() {
         this.config = window.CONFIG || {};
         this.stylingConfig = this.config.styling || {};
         this.presets = this.stylingConfig.presets || {};
-        this.defaultPreset = this.stylingConfig.defaultPreset || 'default';
+        this.defaultPreset = this.stylingConfig.defaultPreset || 'georgia-default'; // UPDATED: Changed default
         
-        // Fallback defaults if CONFIG is not loaded
+        // UPDATED: Fallback defaults now use Georgia fonts
         this.fallbackDefaults = {
             fonts: {
-                headingFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                headingWeight: '600',
+                headingFamily: 'Georgia, "Times New Roman", Times, serif',
+                headingWeight: '700',
                 headingStyle: 'normal',
                 headingScale: '1.0',
-                bodyFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                bodyFamily: 'Georgia, "Times New Roman", Times, serif',
                 bodyWeight: '400',
                 bodyWeightBold: '700',
                 bodyStyle: 'normal',
@@ -37,7 +38,7 @@ class CSSVariablesFontConfig {
     }
     
     init() {
-        console.log('🎨 Initializing Enhanced CSS Variables Font Configuration...');
+        console.log('🎨 Initializing Enhanced CSS Variables Font Configuration with Georgia fonts...');
         console.log('🎨 Available presets:', Object.keys(this.presets));
         console.log('🎨 Default preset:', this.defaultPreset);
         
@@ -51,16 +52,16 @@ class CSSVariablesFontConfig {
             finalStyling = this.readFromParentWindow();
         }
         
-        // Method 3: Use configured default preset
+        // Method 3: Use configured default preset (now Georgia-based)
         if (Object.keys(finalStyling).length === 0) {
             finalStyling = this.getPresetStyling(this.defaultPreset);
             console.log(`🎨 Using configured default preset: ${this.defaultPreset}`);
         }
         
-        // Method 4: Use fallback defaults if all else fails
+        // Method 4: Use fallback defaults if all else fails (now Georgia fonts)
         if (Object.keys(finalStyling).length === 0) {
             finalStyling = this.fallbackDefaults;
-            console.log('🎨 Using fallback default styling');
+            console.log('🎨 Using Georgia-based fallback default styling');
         }
         
         // Apply the styling
@@ -69,7 +70,7 @@ class CSSVariablesFontConfig {
         // Store current configuration
         this.currentStyling = finalStyling;
         
-        console.log('🎨 Final styling applied:', finalStyling);
+        console.log('🎨 Final Georgia-based styling applied:', finalStyling);
     }
     
     readFromURLParameters() {
@@ -228,7 +229,7 @@ class CSSVariablesFontConfig {
         // Apply the CSS that uses these variables
         this.applyCSSStyles();
         
-        console.log('✅ CSS Variables and styles applied');
+        console.log('✅ CSS Variables and styles applied with Georgia fonts');
     }
     
     convertToCSSVariables(styling) {
@@ -288,32 +289,32 @@ class CSSVariablesFontConfig {
         }
         
         const css = `
-            /* Enhanced CSS Variables Font & Color Configuration */
+            /* Enhanced CSS Variables Font & Color Configuration - UPDATED: Georgia Font Defaults */
             
-            /* Headings */
+            /* Headings - Georgia serif fonts */
             h1, h2, h3, h4, h5, h6,
             .page-title h1,
             .title-container h2,
             .preview-info h3,
             .measuring-guide summary h3,
             .form-group h3 {
-                font-family: var(--font-heading-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+                font-family: var(--font-heading-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-style: var(--font-heading-style, normal) !important;
-                font-weight: var(--font-heading-weight, 600) !important;
+                font-weight: var(--font-heading-weight, 700) !important;
                 letter-spacing: calc(var(--font-heading-scale, 1) * 0.06rem) !important;
                 color: var(--color-text, #333333) !important;
                 line-height: calc(1 + 0.3 / max(1, var(--font-heading-scale, 1))) !important;
                 word-break: break-word !important;
             }
             
-            /* Body text */
+            /* Body text - Georgia serif fonts */
             body,
             p,
             .guide-content p,
             .order-line,
             .disclaimer p,
             .loading-message {
-                font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-style: var(--font-body-style, normal) !important;
                 font-weight: var(--font-body-weight, 400) !important;
                 font-size: calc(1rem * var(--font-body-scale, 1)) !important;
@@ -335,10 +336,11 @@ class CSSVariablesFontConfig {
                 border: 1px solid var(--color-border, #E9ECEF) !important;
             }
             
-            /* Form inputs */
+            /* Form inputs - Georgia fonts */
             .form-group select,
-            .form-group input {
-                font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+            .form-group input,
+            .form-group textarea {
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-style: var(--font-body-style, normal) !important;
                 font-weight: var(--font-body-weight, 400) !important;
                 background: var(--color-background, #FFFFFF) !important;
@@ -347,13 +349,27 @@ class CSSVariablesFontConfig {
             }
             
             .form-group select:focus,
-            .form-group input:focus {
+            .form-group input:focus,
+            .form-group textarea:focus {
                 border-color: var(--color-accent, #007BFF) !important;
             }
             
-            /* Buttons */
+            /* Dropdown options - Georgia fonts */
+            .dropdown-selected,
+            .dropdown-option,
+            .option-text,
+            .dropdown-search input {
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
+                font-weight: var(--font-body-weight, 400) !important;
+            }
+            
+            .selected-text {
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
+            }
+            
+            /* Buttons - Georgia fonts */
             .btn {
-                font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-weight: var(--font-body-weight-bold, 700) !important;
                 background: var(--color-button-background, #F8F9FA) !important;
                 color: var(--color-button-text, #333333) !important;
@@ -368,9 +384,9 @@ class CSSVariablesFontConfig {
                 box-shadow: 0 4px 12px var(--color-shadow, rgba(0,0,0,0.15)) !important;
             }
             
-            /* UI elements */
+            /* UI elements - Georgia fonts */
             .dimension-input span {
-                font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-weight: var(--font-body-weight-bold, 700) !important;
                 color: var(--color-text, #333333) !important;
             }
@@ -417,9 +433,23 @@ class CSSVariablesFontConfig {
             
             .page-title p {
                 font-size: calc(1rem * var(--font-body-scale, 1)) !important;
-                font-family: var(--font-body-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif) !important;
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 color: var(--color-text, #333333) !important;
                 opacity: 0.7;
+            }
+            
+            /* Quote form elements - Georgia fonts */
+            .quote-form h3,
+            .quote-form label,
+            .quote-form input,
+            .quote-form textarea,
+            .checkbox-group label {
+                font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
+            }
+            
+            /* Product links - Georgia fonts */
+            .product-links a {
+                font-family: var(--font-heading-family, Georgia, "Times New Roman", Times, serif) !important;
             }
         `;
         
@@ -475,7 +505,7 @@ class CSSVariablesFontConfig {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     window.cssVariablesFontConfig = new CSSVariablesFontConfig();
-    console.log('🎨 Enhanced CSS Variables Font Configuration initialized');
+    console.log('🎨 Enhanced CSS Variables Font Configuration initialized with Georgia fonts');
     
     // Debug functions for console testing
     window.testCSSPreset = function(preset) {
@@ -488,6 +518,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.showAvailablePresets = function() {
         console.table(window.cssVariablesFontConfig.getAvailablePresets());
+    };
+    
+    // NEW: Convenience function to force Georgia fonts
+    window.applyGeorgiaFonts = function() {
+        const georgiaConfig = {
+            fonts: {
+                headingFamily: 'Georgia, "Times New Roman", Times, serif',
+                headingWeight: '700',
+                bodyFamily: 'Georgia, "Times New Roman", Times, serif',
+                bodyWeight: '400',
+                bodyWeightBold: '700'
+            }
+        };
+        window.cssVariablesFontConfig.updateStyling(georgiaConfig);
+        console.log('🎨 Georgia fonts applied everywhere!');
     };
 });
 
