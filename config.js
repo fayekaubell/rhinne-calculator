@@ -1,6 +1,7 @@
 // Configuration for Wallpaper Calculator
 // Modify these settings to customize for your business
 // UPDATED: New Google Sheets logging configuration with new webhook URL and email
+// UPDATED: Changed default preset to Georgia fonts
 
 const CONFIG = {
   // Business Information
@@ -90,11 +91,41 @@ const CONFIG = {
   // Font & Color Styling Configuration
   // These can be overridden via URL parameters or parent window CSS variables
   styling: {
-    // Default styling preset
-    defaultPreset: "faye-bell-brand",
+    // UPDATED: Default styling preset changed to Georgia
+    defaultPreset: "georgia-default",
 
     // Available presets for different websites/brands
     presets: {
+      // NEW: Georgia-based default preset
+      "georgia-default": {
+        name: "Georgia Serif Default",
+        description: "Classic Georgia serif fonts for elegant, readable text",
+        
+        fonts: {
+          headingFamily: 'Georgia, "Times New Roman", Times, serif',
+          headingWeight: '700',
+          headingStyle: 'normal',
+          headingScale: '1.0',
+          
+          bodyFamily: 'Georgia, "Times New Roman", Times, serif',
+          bodyWeight: '400',
+          bodyWeightBold: '700',
+          bodyStyle: 'normal',
+          bodyScale: '1.0'
+        },
+
+        colors: {
+          background: '#FFFFFF',
+          text: '#333333',
+          buttonBackground: '#F8F9FA',
+          buttonText: '#333333',
+          buttonOutline: '#000000',
+          shadow: '#414141',
+          border: '#E9ECEF',
+          accent: '#6C757D'
+        }
+      },
+
       "faye-bell-brand": {
         name: "Faye Bell Brand Colors",
         description: "Official Faye Bell website styling with Clarendon headings and Helvetica body",
@@ -210,6 +241,65 @@ const CONFIG = {
           shadow: '#7F8C8D',
           border: '#BDC3C7',
           accent: '#3498DB'
+        }
+      },
+
+      // NEW: Georgia-focused variants
+      "georgia-elegant": {
+        name: "Georgia Elegant",
+        description: "Refined Georgia serif with elegant proportions",
+        
+        fonts: {
+          headingFamily: 'Georgia, "Times New Roman", Times, serif',
+          headingWeight: '700',
+          headingStyle: 'normal',
+          headingScale: '1.1',
+          
+          bodyFamily: 'Georgia, "Times New Roman", Times, serif',
+          bodyWeight: '400',
+          bodyWeightBold: '700',
+          bodyStyle: 'normal',
+          bodyScale: '1.05'
+        },
+
+        colors: {
+          background: '#FEFEFE',
+          text: '#2C2C2C',
+          buttonBackground: '#F5F5F5',
+          buttonText: '#2C2C2C',
+          buttonOutline: '#D4AF37',
+          shadow: '#8B7355',
+          border: '#E8E8E8',
+          accent: '#8B4513'
+        }
+      },
+
+      "georgia-traditional": {
+        name: "Georgia Traditional",
+        description: "Traditional book-like styling with Georgia serif",
+        
+        fonts: {
+          headingFamily: 'Georgia, "Times New Roman", Times, serif',
+          headingWeight: '600',
+          headingStyle: 'normal',
+          headingScale: '1.2',
+          
+          bodyFamily: 'Georgia, "Times New Roman", Times, serif',
+          bodyWeight: '400',
+          bodyWeightBold: '600',
+          bodyStyle: 'normal',
+          bodyScale: '1.1'
+        },
+
+        colors: {
+          background: '#FFFEF7',
+          text: '#1A1A1A',
+          buttonBackground: '#F0EDE4',
+          buttonText: '#1A1A1A',
+          buttonOutline: '#8B7355',
+          shadow: '#6B5B47',
+          border: '#D4C4A8',
+          accent: '#8B4513'
         }
       }
     },
