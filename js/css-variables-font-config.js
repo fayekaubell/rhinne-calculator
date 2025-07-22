@@ -1,6 +1,7 @@
 // Enhanced CSS Variables Font Configuration System for Wallpaper Calculator
 // Now reads presets from CONFIG.js while maintaining flexibility
 // UPDATED: Changed default preset to use Georgia fonts
+// UPDATED: Changed background color to #fdfaf3
 
 class CSSVariablesFontConfig {
     constructor() {
@@ -9,7 +10,7 @@ class CSSVariablesFontConfig {
         this.presets = this.stylingConfig.presets || {};
         this.defaultPreset = this.stylingConfig.defaultPreset || 'georgia-default'; // UPDATED: Changed default
         
-        // UPDATED: Fallback defaults now use Georgia fonts
+        // UPDATED: Fallback defaults now use Georgia fonts and new background color #fdfaf3
         this.fallbackDefaults = {
             fonts: {
                 headingFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -23,7 +24,7 @@ class CSSVariablesFontConfig {
                 bodyScale: '1.0'
             },
             colors: {
-                background: '#FFFFFF',
+                background: '#fdfaf3', // UPDATED: New background color
                 text: '#333333',
                 buttonBackground: '#F8F9FA',
                 buttonText: '#333333',
@@ -38,9 +39,10 @@ class CSSVariablesFontConfig {
     }
     
     init() {
-        console.log('🎨 Initializing Enhanced CSS Variables Font Configuration with Georgia fonts...');
+        console.log('🎨 Initializing Enhanced CSS Variables Font Configuration with Georgia fonts and new background...');
         console.log('🎨 Available presets:', Object.keys(this.presets));
         console.log('🎨 Default preset:', this.defaultPreset);
+        console.log('🎨 New background color: #fdfaf3');
         
         let finalStyling = {};
         
@@ -52,16 +54,16 @@ class CSSVariablesFontConfig {
             finalStyling = this.readFromParentWindow();
         }
         
-        // Method 3: Use configured default preset (now Georgia-based)
+        // Method 3: Use configured default preset (now Georgia-based with new background)
         if (Object.keys(finalStyling).length === 0) {
             finalStyling = this.getPresetStyling(this.defaultPreset);
             console.log(`🎨 Using configured default preset: ${this.defaultPreset}`);
         }
         
-        // Method 4: Use fallback defaults if all else fails (now Georgia fonts)
+        // Method 4: Use fallback defaults if all else fails (now Georgia fonts with new background)
         if (Object.keys(finalStyling).length === 0) {
             finalStyling = this.fallbackDefaults;
-            console.log('🎨 Using Georgia-based fallback default styling');
+            console.log('🎨 Using Georgia-based fallback default styling with new background #fdfaf3');
         }
         
         // Apply the styling
@@ -70,7 +72,7 @@ class CSSVariablesFontConfig {
         // Store current configuration
         this.currentStyling = finalStyling;
         
-        console.log('🎨 Final Georgia-based styling applied:', finalStyling);
+        console.log('🎨 Final Georgia-based styling applied with new background:', finalStyling);
     }
     
     readFromURLParameters() {
@@ -229,7 +231,7 @@ class CSSVariablesFontConfig {
         // Apply the CSS that uses these variables
         this.applyCSSStyles();
         
-        console.log('✅ CSS Variables and styles applied with Georgia fonts');
+        console.log('✅ CSS Variables and styles applied with Georgia fonts and new background #fdfaf3');
     }
     
     convertToCSSVariables(styling) {
@@ -289,7 +291,7 @@ class CSSVariablesFontConfig {
         }
         
         const css = `
-            /* Enhanced CSS Variables Font & Color Configuration - UPDATED: Georgia Font Defaults */
+            /* Enhanced CSS Variables Font & Color Configuration - UPDATED: Georgia Font Defaults + New Background */
             
             /* Headings - Georgia serif fonts */
             h1, h2, h3, h4, h5, h6,
@@ -321,9 +323,9 @@ class CSSVariablesFontConfig {
                 color: var(--color-text, #333333) !important;
             }
             
-            /* Background colors */
+            /* Background colors - UPDATED: New background color #fdfaf3 */
             body {
-                background: var(--color-background, #FFFFFF) !important;
+                background: var(--color-background, #fdfaf3) !important;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
                 line-height: 1.6;
@@ -332,7 +334,7 @@ class CSSVariablesFontConfig {
             .calculator-section,
             .preview-section,
             .measuring-guide {
-                background: var(--color-background, #FFFFFF) !important;
+                background: var(--color-background, #fdfaf3) !important;
                 border: 1px solid var(--color-border, #E9ECEF) !important;
             }
             
@@ -343,7 +345,7 @@ class CSSVariablesFontConfig {
                 font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-style: var(--font-body-style, normal) !important;
                 font-weight: var(--font-body-weight, 400) !important;
-                background: var(--color-background, #FFFFFF) !important;
+                background: var(--color-background, #fdfaf3) !important;
                 color: var(--color-text, #333333) !important;
                 border: 2px solid var(--color-border, #E9ECEF) !important;
             }
@@ -379,7 +381,7 @@ class CSSVariablesFontConfig {
             
             .btn:hover:not(:disabled) {
                 background: var(--color-accent, #007BFF) !important;
-                color: var(--color-background, #FFFFFF) !important;
+                color: var(--color-background, #fdfaf3) !important;
                 border-color: var(--color-accent, #007BFF) !important;
                 box-shadow: 0 4px 12px var(--color-shadow, rgba(0,0,0,0.15)) !important;
             }
@@ -505,7 +507,7 @@ class CSSVariablesFontConfig {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     window.cssVariablesFontConfig = new CSSVariablesFontConfig();
-    console.log('🎨 Enhanced CSS Variables Font Configuration initialized with Georgia fonts');
+    console.log('🎨 Enhanced CSS Variables Font Configuration initialized with Georgia fonts and new background #fdfaf3');
     
     // Debug functions for console testing
     window.testCSSPreset = function(preset) {
@@ -533,6 +535,17 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         window.cssVariablesFontConfig.updateStyling(georgiaConfig);
         console.log('🎨 Georgia fonts applied everywhere!');
+    };
+    
+    // NEW: Convenience function to apply new background color
+    window.applyNewBackground = function() {
+        const backgroundConfig = {
+            colors: {
+                background: '#fdfaf3'
+            }
+        };
+        window.cssVariablesFontConfig.updateStyling(backgroundConfig);
+        console.log('🎨 New background color #fdfaf3 applied!');
     };
 });
 
