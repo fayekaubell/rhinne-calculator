@@ -323,7 +323,7 @@ class CSSVariablesFontConfig {
                 color: var(--color-text, #333333) !important;
             }
             
-            /* Background colors - UPDATED: New background color #fdfaf3 */
+            /* Background colors - UPDATED: Page background #fdfaf3, containers white */
             body {
                 background: var(--color-background, #fdfaf3) !important;
                 -webkit-font-smoothing: antialiased;
@@ -331,21 +331,22 @@ class CSSVariablesFontConfig {
                 line-height: 1.6;
             }
             
+            /* Container backgrounds - WHITE for content areas */
             .calculator-section,
             .preview-section,
             .measuring-guide {
-                background: var(--color-background, #fdfaf3) !important;
+                background: #FFFFFF !important;
                 border: 1px solid var(--color-border, #E9ECEF) !important;
             }
             
-            /* Form inputs - Georgia fonts */
+            /* Form inputs - Georgia fonts with WHITE backgrounds */
             .form-group select,
             .form-group input,
             .form-group textarea {
                 font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-style: var(--font-body-style, normal) !important;
                 font-weight: var(--font-body-weight, 400) !important;
-                background: var(--color-background, #fdfaf3) !important;
+                background: #FFFFFF !important;
                 color: var(--color-text, #333333) !important;
                 border: 2px solid var(--color-border, #E9ECEF) !important;
             }
@@ -356,13 +357,29 @@ class CSSVariablesFontConfig {
                 border-color: var(--color-accent, #007BFF) !important;
             }
             
-            /* Dropdown options - Georgia fonts */
+            /* Dropdown options - Georgia fonts with WHITE backgrounds */
             .dropdown-selected,
             .dropdown-option,
             .option-text,
             .dropdown-search input {
                 font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
                 font-weight: var(--font-body-weight, 400) !important;
+            }
+            
+            .dropdown-selected {
+                background: #FFFFFF !important;
+            }
+            
+            .dropdown-options {
+                background: #FFFFFF !important;
+            }
+            
+            .dropdown-search {
+                background: #f8f9fa !important;
+            }
+            
+            .dropdown-search input {
+                background: #FFFFFF !important;
             }
             
             .selected-text {
@@ -381,7 +398,7 @@ class CSSVariablesFontConfig {
             
             .btn:hover:not(:disabled) {
                 background: var(--color-accent, #007BFF) !important;
-                color: var(--color-background, #fdfaf3) !important;
+                color: #FFFFFF !important;
                 border-color: var(--color-accent, #007BFF) !important;
                 box-shadow: 0 4px 12px var(--color-shadow, rgba(0,0,0,0.15)) !important;
             }
@@ -440,13 +457,22 @@ class CSSVariablesFontConfig {
                 opacity: 0.7;
             }
             
-            /* Quote form elements - Georgia fonts */
+            /* Quote form elements - Georgia fonts with WHITE backgrounds */
             .quote-form h3,
             .quote-form label,
             .quote-form input,
             .quote-form textarea,
             .checkbox-group label {
                 font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif) !important;
+            }
+            
+            .quote-form {
+                background: #f8f9fa !important;
+            }
+            
+            .quote-form input,
+            .quote-form textarea {
+                background: #FFFFFF !important;
             }
             
             /* Product links - Georgia fonts */
