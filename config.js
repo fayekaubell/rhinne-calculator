@@ -26,7 +26,7 @@ const CONFIG = {
     enabled: true,
     
     // UPDATED: Final Google Apps Script webhook URL - wallpaper.calculator.rhinne@gmail.com account
-    webhookUrl: "https://script.google.com/macros/s/AKfycbyIhqo6-e61Ic8pq2k5P45tBZZZrL1ivtb7B1EWvAAENt5JL_fwMUExpAlcIgn49GxR/exec",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbzriSN-cFelfKn9bFxv8HQAGmlbZYwBK0a2YwE4kMUrIj797acCGqQjlCegE3-4XL8x/exec",
     
     // Retry settings for webhook requests
     retryAttempts: 3,
