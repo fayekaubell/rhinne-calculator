@@ -2,6 +2,7 @@
 // CORS-FREE VERSION: Uses GET requests with URL parameters to avoid CORS issues
 // UPDATED: Sequential preview numbers from Google Sheets
 // UPDATED: Remove SKU from filename generation
+// UPDATED: Removed User Agent tracking for better cross-system compatibility
 
 class CalculatorLogger {
     constructor() {
@@ -38,13 +39,14 @@ class CalculatorLogger {
             return;
         }
         
-        console.log('📊 Calculator logging initialized (CORS-free version):', {
+        console.log('📊 Calculator logging initialized (CORS-free, no User Agent tracking):', {
             webhookUrl: this.webhookUrl ? 'Configured' : 'Missing',
             previewLogging: this.enablePreviewLogging,
             pdfLogging: this.enablePDFLogging,
             quoteLogging: this.enableQuoteLogging,
             sequentialNumbers: 'Enabled',
-            method: 'GET (CORS-free)'
+            method: 'GET (CORS-free)',
+            userAgentTracking: 'Disabled'
         });
         
         this.setupEventListeners();
@@ -75,13 +77,13 @@ class CalculatorLogger {
             }
         });
         
-        console.log('📊 Logging event listeners attached');
+        console.log('📊 Logging event listeners attached (no User Agent tracking)');
     }
     
     // ADDED: Test webhook connection using GET request
     async testWebhookConnection() {
         try {
-            console.log('🔗 Testing webhook connection (CORS-free)...');
+            console.log('🔗 Testing webhook connection (CORS-free, no UA)...');
             
             const testUrl = `${this.webhookUrl}?action=test&timestamp=${new Date().toISOString()}`;
             
@@ -109,10 +111,7 @@ class CalculatorLogger {
         return new Date().toISOString();
     }
     
-    getUserAgent() {
-        if (!this.config.includeUserAgent) return '';
-        return navigator.userAgent || '';
-    }
+    // REMOVED: getUserAgent function - no longer tracking User Agent
     
     getWallDimensions() {
         if (!window.currentPreview) return { width: '', height: '' };
@@ -160,6 +159,7 @@ class CalculatorLogger {
     }
     
     // UPDATED: Generate preview logging using GET request - ONLY action that gets NEW preview number
+    // REMOVED: User Agent parameter
     async logGeneratePreview(eventData = {}) {
         if (this.temporarilyDisabled) {
             console.log('📊 Logging temporarily disabled due to errors, skipping preview log');
@@ -177,9 +177,8 @@ class CalculatorLogger {
                 wallWidth: wallDimensions.width,
                 wallHeight: wallDimensions.height,
                 patternSelected: patternInfo.display,
-                totalYardage: totalYardage,
-                userAgent: this.getUserAgent()
-                // NOTE: No previewNumber sent - Google Apps Script will generate it
+                totalYardage: totalYardage
+                // REMOVED: userAgent parameter
             };
             
             const response = await this.sendToWebhook(params);
@@ -218,6 +217,7 @@ class CalculatorLogger {
     }
     
     // UPDATED: PDF download logging - REUSES existing preview number
+    // REMOVED: User Agent parameter
     async logDownloadPDF(eventData = {}) {
         if (this.temporarilyDisabled) {
             console.log('📊 Logging temporarily disabled due to errors, skipping PDF log');
@@ -245,8 +245,8 @@ class CalculatorLogger {
                 patternSelected: patternInfo.display,
                 totalYardage: totalYardage,
                 pdfFilename: pdfFilename,
-                previewNumber: currentPreviewNumber, // REUSE existing number
-                userAgent: this.getUserAgent()
+                previewNumber: currentPreviewNumber
+                // REMOVED: userAgent parameter
             };
             
             await this.sendToWebhook(params);
@@ -263,6 +263,7 @@ class CalculatorLogger {
     }
     
     // UPDATED: Quote submission logging - REUSES existing preview number
+    // REMOVED: User Agent parameter
     async logSubmitQuote(eventData = {}) {
         if (this.temporarilyDisabled) {
             console.log('📊 Logging temporarily disabled due to errors, skipping quote log');
@@ -297,13 +298,13 @@ class CalculatorLogger {
                 patternSelected: patternInfo.display,
                 totalYardage: totalYardage,
                 pdfFilename: pdfFilename,
-                previewNumber: currentPreviewNumber, // REUSE existing number
-                userAgent: this.getUserAgent(),
+                previewNumber: currentPreviewNumber,
                 customerName: customerName,
                 customerEmail: customerEmail,
                 customerBusiness: customerBusiness,
                 additionalNotes: additionalNotes,
                 newsletter: newsletter.toString()
+                // REMOVED: userAgent parameter
             };
             
             await this.sendToWebhook(params);
@@ -366,7 +367,7 @@ class CalculatorLogger {
         
         while (attempt < this.retryAttempts) {
             try {
-                console.log(`📤 Sending to webhook via GET (attempt ${attempt + 1}):`, {
+                console.log(`📤 Sending to webhook via GET (attempt ${attempt + 1}, no UA):`, {
                     action: params.action,
                     previewNumber: params.previewNumber,
                     timestamp: params.timestamp
@@ -380,10 +381,12 @@ class CalculatorLogger {
                     }
                 });
                 
-                console.log('🔗 GET URL:', url.toString().substring(0, 150) + '...');
+                const urlString = url.toString();
+                console.log('🔗 GET URL (no UA):', urlString.substring(0, 150) + '...');
+                console.log('📏 URL length:', urlString.length, 'characters');
                 
                 // CORS-FREE: Use GET request
-                const response = await fetch(url.toString(), {
+                const response = await fetch(urlString, {
                     method: 'GET',
                     cache: 'no-cache'
                 });
@@ -399,14 +402,14 @@ class CalculatorLogger {
                     
                     if (responseText.trim()) {
                         const responseData = JSON.parse(responseText);
-                        console.log('✅ Data sent to webhook successfully via GET, response:', responseData);
+                        console.log('✅ Data sent to webhook successfully via GET (no UA), response:', responseData);
                         return responseData;
                     } else {
-                        console.log('✅ Data sent to webhook successfully (empty response)');
+                        console.log('✅ Data sent to webhook successfully (empty response, no UA)');
                         return { success: true };
                     }
                 } catch (parseError) {
-                    console.log('✅ Data sent to webhook successfully (response not JSON)');
+                    console.log('✅ Data sent to webhook successfully (response not JSON, no UA)');
                     return { success: true };
                 }
                 
@@ -414,7 +417,7 @@ class CalculatorLogger {
                 lastError = error;
                 attempt++;
                 
-                console.warn(`⚠️ Webhook attempt ${attempt} failed:`, error.message);
+                console.warn(`⚠️ Webhook attempt ${attempt} failed (no UA):`, error.message);
                 
                 if (attempt < this.retryAttempts) {
                     console.log(`🔄 Retrying in ${this.retryDelay}ms...`);
@@ -424,7 +427,7 @@ class CalculatorLogger {
         }
         
         // All retries failed
-        console.error(`❌ Failed to send to webhook after ${this.retryAttempts} attempts:`, lastError);
+        console.error(`❌ Failed to send to webhook after ${this.retryAttempts} attempts (no UA):`, lastError);
         throw new Error(`Webhook logging failed: ${lastError.message}`);
     }
     
@@ -464,7 +467,8 @@ class CalculatorLogger {
             sequentialNumbers: true,
             temporarilyDisabled: this.temporarilyDisabled,
             consecutiveErrors: this.consecutiveErrors,
-            method: 'GET (CORS-free)'
+            method: 'GET (CORS-free)',
+            userAgentTracking: false
         };
     }
     
@@ -491,7 +495,7 @@ function dispatchPreviewGenerated(eventData = {}) {
         detail: eventData
     });
     document.dispatchEvent(event);
-    console.log('📊 Preview generated event dispatched');
+    console.log('📊 Preview generated event dispatched (no UA)');
 }
 
 function dispatchPDFDownloaded(eventData = {}) {
@@ -499,7 +503,7 @@ function dispatchPDFDownloaded(eventData = {}) {
         detail: eventData
     });
     document.dispatchEvent(event);
-    console.log('📊 PDF downloaded event dispatched');
+    console.log('📊 PDF downloaded event dispatched (no UA)');
 }
 
 function dispatchQuoteSubmitted(eventData = {}) {
@@ -507,7 +511,7 @@ function dispatchQuoteSubmitted(eventData = {}) {
         detail: eventData
     });
     document.dispatchEvent(event);
-    console.log('📊 Quote submitted event dispatched');
+    console.log('📊 Quote submitted event dispatched (no UA)');
 }
 
 // Initialize logging system when DOM is ready
@@ -526,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    console.log('📊 Calculator logging system initialized with CORS-free GET requests and sequential numbering');
+    console.log('📊 Calculator logging system initialized with CORS-free GET requests, sequential numbering, and no User Agent tracking');
 });
 
 // Export for use in other modules
