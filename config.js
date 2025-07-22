@@ -2,6 +2,7 @@
 // Modify these settings to customize for your business
 // UPDATED: New Google Sheets logging configuration with new webhook URL and email
 // UPDATED: Changed default preset to Georgia fonts
+// UPDATED: Changed background color to #fdfaf3
 
 const CONFIG = {
   // Business Information
@@ -96,10 +97,10 @@ const CONFIG = {
 
     // Available presets for different websites/brands
     presets: {
-      // NEW: Georgia-based default preset
+      // NEW: Georgia-based default preset with new background color
       "georgia-default": {
         name: "Georgia Serif Default",
-        description: "Classic Georgia serif fonts for elegant, readable text",
+        description: "Classic Georgia serif fonts for elegant, readable text with warm cream background",
         
         fonts: {
           headingFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -115,7 +116,7 @@ const CONFIG = {
         },
 
         colors: {
-          background: '#FFFFFF',
+          background: '#fdfaf3',  // UPDATED: New warm cream background
           text: '#333333',
           buttonBackground: '#F8F9FA',
           buttonText: '#333333',
@@ -146,7 +147,7 @@ const CONFIG = {
 
         // Color variables
         colors: {
-          background: '#FFFFFF',
+          background: '#fdfaf3',  // UPDATED: New warm cream background
           text: '#4B4B4B',
           buttonBackground: '#F9F9F9',
           buttonText: '#4B4B4B',
@@ -175,7 +176,7 @@ const CONFIG = {
         },
 
         colors: {
-          background: '#FFFFFF',
+          background: '#fdfaf3',  // UPDATED: New warm cream background
           text: '#333333',
           buttonBackground: '#F8F9FA',
           buttonText: '#333333',
@@ -233,7 +234,7 @@ const CONFIG = {
         },
 
         colors: {
-          background: '#FFFFFF',
+          background: '#fdfaf3',  // UPDATED: New warm cream background
           text: '#2C3E50',
           buttonBackground: '#34495E',
           buttonText: '#FFFFFF',
@@ -244,10 +245,10 @@ const CONFIG = {
         }
       },
 
-      // NEW: Georgia-focused variants
+      // NEW: Georgia-focused variants with new background
       "georgia-elegant": {
         name: "Georgia Elegant",
-        description: "Refined Georgia serif with elegant proportions",
+        description: "Refined Georgia serif with elegant proportions and warm background",
         
         fonts: {
           headingFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -263,7 +264,7 @@ const CONFIG = {
         },
 
         colors: {
-          background: '#FEFEFE',
+          background: '#fdfaf3',  // UPDATED: New warm cream background
           text: '#2C2C2C',
           buttonBackground: '#F5F5F5',
           buttonText: '#2C2C2C',
@@ -276,7 +277,7 @@ const CONFIG = {
 
       "georgia-traditional": {
         name: "Georgia Traditional",
-        description: "Traditional book-like styling with Georgia serif",
+        description: "Traditional book-like styling with Georgia serif and warm background",
         
         fonts: {
           headingFamily: 'Georgia, "Times New Roman", Times, serif',
@@ -292,7 +293,7 @@ const CONFIG = {
         },
 
         colors: {
-          background: '#FFFEF7',
+          background: '#fdfaf3',  // UPDATED: New warm cream background (replaces #FFFEF7)
           text: '#1A1A1A',
           buttonBackground: '#F0EDE4',
           buttonText: '#1A1A1A',
