@@ -4,6 +4,7 @@
 // UPDATED: Added product links functionality
 // UPDATED: Changed titles, kept overage section, removed disclaimer
 // UPDATED: Removed SKU from preview titles
+// UPDATED: Added pattern description below title
 
 // Generate preview function - main coordination logic
 async function generatePreview() {
@@ -103,6 +104,9 @@ async function generatePreview() {
         // Add product links after setting the preview title
         addProductLinksToPreview();
         
+        // UPDATED: Add pattern description after product links
+        addPatternDescriptionToPreview();
+        
         if (loadingOverlay) {
             loadingOverlay.style.display = 'flex';
         }
@@ -172,6 +176,85 @@ async function generatePreview() {
         }
         alert('An error occurred: ' + error.message);
     }
+}
+
+// NEW: Add pattern description to preview section
+function addPatternDescriptionToPreview() {
+    if (!currentPreview || !currentPreview.pattern) {
+        console.warn('No current preview data available for pattern description');
+        return;
+    }
+    
+    const { pattern } = currentPreview;
+    
+    // Find the title container
+    const titleContainer = document.querySelector('.title-container');
+    if (!titleContainer) {
+        console.warn('Title container not found for pattern description');
+        return;
+    }
+    
+    // Remove any existing pattern description
+    const existingDescription = titleContainer.querySelector('.pattern-description');
+    if (existingDescription) {
+        existingDescription.remove();
+    }
+    
+    // Check if pattern has a description
+    if (!pattern.description || !pattern.description.trim()) {
+        console.log('ℹ️ No description available for this pattern');
+        return;
+    }
+    
+    // Create pattern description container
+    const descriptionContainer = document.createElement('div');
+    descriptionContainer.className = 'pattern-description';
+    descriptionContainer.style.cssText = `
+        text-align: center;
+        margin: 20px auto;
+        max-width: 600px;
+        padding: 0 20px;
+    `;
+    
+    // Create description paragraph with disclaimer styling
+    const descriptionParagraph = document.createElement('p');
+    descriptionParagraph.className = 'pattern-description-text';
+    descriptionParagraph.textContent = pattern.description.trim();
+    descriptionParagraph.style.cssText = `
+        margin: 0;
+        font-style: italic;
+        opacity: 0.8;
+        font-weight: 400;
+        line-height: 1.6;
+        font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif);
+        font-size: calc(1rem * var(--font-body-scale, 1));
+        color: var(--color-text, #333333);
+    `;
+    
+    descriptionContainer.appendChild(descriptionParagraph);
+    
+    // Insert the description after the title and product links
+    // Find the best insertion point (after product links if they exist, otherwise after title)
+    const productLinks = titleContainer.querySelector('.product-links');
+    const titleH2 = titleContainer.querySelector('h2');
+    
+    if (productLinks) {
+        // Insert after product links
+        productLinks.insertAdjacentElement('afterend', descriptionContainer);
+    } else if (titleH2) {
+        // Insert after title
+        titleH2.insertAdjacentElement('afterend', descriptionContainer);
+    } else {
+        // Fallback: append to title container
+        titleContainer.appendChild(descriptionContainer);
+    }
+    
+    console.log('✅ Pattern description added to preview interface');
+    
+    // Trigger auto-resize after adding description
+    setTimeout(() => {
+        if (window.autoResize) window.autoResize.updateHeight();
+    }, 100);
 }
 
 // NEW: Add product links to preview section
@@ -465,6 +548,9 @@ async function openHighResInNewTab() {
         // UPDATED: Generate product links HTML for the new tab
         const productLinksHtml = generateProductLinksHtml(pattern);
         
+        // UPDATED: Generate pattern description HTML for the new tab
+        const patternDescriptionHtml = generatePatternDescriptionHtml(pattern);
+        
         const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -513,7 +599,7 @@ async function openHighResInNewTab() {
         }
         
         .product-links {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         
         .product-links a {
@@ -528,6 +614,20 @@ async function openHighResInNewTab() {
         
         .product-links a:hover {
             opacity: 0.7;
+        }
+        
+        .pattern-description {
+            margin-bottom: 30px;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+        
+        .pattern-description p {
+            font-style: italic;
+            opacity: 0.8;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ffffff;
         }
         
         .image-container {
@@ -579,6 +679,7 @@ async function openHighResInNewTab() {
         <h1>${pattern.name}</h1>
         <p>${formattedWidth}w x ${formattedHeight}h Wall</p>
         ${productLinksHtml}
+        ${patternDescriptionHtml}
     </div>
     
     <div class="image-container">
@@ -697,7 +798,7 @@ async function openHighResInNewTab() {
         } else {
             newTab.document.write(htmlContent);
             newTab.document.close();
-            console.log('✅ High-resolution preview opened in new tab with product links');
+            console.log('✅ High-resolution preview opened in new tab with product links and description');
         }
         
         // Restore canvas cursor and title
@@ -744,6 +845,17 @@ function generateProductLinksHtml(pattern) {
     }
     
     return linksHtml;
+}
+
+// NEW: Generate pattern description HTML for the new tab view
+function generatePatternDescriptionHtml(pattern) {
+    if (!pattern.description || !pattern.description.trim()) {
+        return '';
+    }
+    
+    return `<div class="pattern-description">
+        <p>${pattern.description.trim()}</p>
+    </div>`;
 }
 
 // Generate high-resolution canvas specifically for viewing (adapted from PDF generation)
