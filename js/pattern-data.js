@@ -1,6 +1,7 @@
 // Pattern Data Module - Data loading, CSV parsing, and calculations
 // UPDATED: Simplified calculations - cap panels at max available length and anchor to bottom
 // FIXED: Ensure patterns global variable is properly set
+// UPDATED: Added description field parsing from CSV
 
 // Global variables for data
 let patterns = {};
@@ -93,7 +94,8 @@ async function loadPatternsFromCSV() {
                 product_tearsheet_url: '',
                 product_page_url: '',
                 product_360_url: '',
-                patternMatch: 'straight'
+                patternMatch: 'straight',
+                description: 'This is a demo pattern for testing purposes. It showcases the basic functionality of the wallpaper calculator.'
             }
         };
         
@@ -156,6 +158,9 @@ function createPatternFromCSV(row) {
         thumbnailUrl = imageUrl;
     }
     
+    // UPDATED: Parse description field from CSV
+    const description = row.description && row.description.trim() ? row.description.trim() : '';
+    
     const pattern = {
         id: patternId,
         name: row.pattern_name,
@@ -177,10 +182,14 @@ function createPatternFromCSV(row) {
         handle: patternId,
         product_tearsheet_url: row.product_tearsheet_url || '',
         product_page_url: row.product_page_url || '',
-        product_360_url: row['360_view_url'] || ''
+        product_360_url: row['360_view_url'] || '',
+        description: description  // UPDATED: Added description field
     };
     
     console.log('✅ Created pattern:', pattern.name, pattern.id);
+    if (description) {
+        console.log('📝 Pattern description:', description.substring(0, 100) + (description.length > 100 ? '...' : ''));
+    }
     return pattern;
 }
 
