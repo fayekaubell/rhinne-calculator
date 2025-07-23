@@ -1188,3 +1188,58 @@ html, body {
     0% { transform: translateY(-50%) rotate(0deg); }
     100% { transform: translateY(-50%) rotate(360deg); }
 }
+
+/* Pattern Description Styles - Added to existing styles.css */
+/* Add these styles to your existing css/styles.css file */
+
+/* Pattern description styling - matches disclaimer text styling */
+.pattern-description {
+    text-align: center;
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 0 20px;
+}
+
+.pattern-description p,
+.pattern-description-text {
+    margin: 0;
+    font-style: italic;
+    opacity: 0.8;
+    font-weight: 400;
+    line-height: 1.6;
+    /* Font will be set by font-config.js */
+    font-family: var(--font-body-family, Georgia, "Times New Roman", Times, serif);
+    font-size: calc(1rem * var(--font-body-scale, 1));
+    color: var(--color-text, #333333);
+}
+
+/* Responsive adjustments for pattern description */
+@media (max-width: 768px) {
+    .pattern-description {
+        margin: 15px auto;
+        padding: 0 15px;
+        max-width: 100%;
+    }
+    
+    .pattern-description p,
+    .pattern-description-text {
+        font-size: calc(0.9rem * var(--font-body-scale, 1));
+        line-height: 1.5;
+    }
+}
+
+/* Ensure proper spacing between elements in title container */
+.title-container .pattern-description {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* When pattern description appears after product links */
+.product-links + .pattern-description {
+    margin-top: 10px;
+}
+
+/* When pattern description appears directly after title */
+.title-container h2 + .pattern-description {
+    margin-top: 20px;
+}
